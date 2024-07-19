@@ -76,7 +76,7 @@ public class EventBoardService extends DetailCommon{
         }
 
         DetailEventBoardDto detailEventBoardDto =
-                new DetailEventBoardDto(eventBoard.getId() ,eventBoard.getTitle(), eventBoard.getUser().getNickname(), view,
+                new DetailEventBoardDto(eventBoard.getId(), eventBoard.getUser().getId(), eventBoard.getTitle(), eventBoard.getUser().getNickname(), view,
                         eventBoard.getFilename(), encodeFileToBase64(eventBoard.getUser().getProfileImgFilename()));
 
         DetailBaseDto detailBaseDto = first.get(2, DetailBaseDto.class);

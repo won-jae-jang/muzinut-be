@@ -13,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "message")
 public class Message {
 
     @Id @GeneratedValue
@@ -27,8 +28,8 @@ public class Message {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String message;
-    private Boolean read;
+    private String content;
+    private Boolean isRead;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime sendTime;
@@ -41,12 +42,12 @@ public class Message {
     /**
      * @param user:    채팅 작성자
      * @param chat:    채팅방
-     * @param message: 메시지
+     * @param content: 메시지
      */
-    public Message(User user, Chat chat, String message) {
+    public Message(User user, Chat chat, String content) {
         this.user = user;
         this.chat = chat;
-        this.message = message;
+        this.content = content;
         this.sendTime = LocalDateTime.now();
         user.getMessages().add(this);
         chat.getMessages().add(this);
@@ -56,9 +57,9 @@ public class Message {
     public Message createNotReadMessage(User user, Chat chat, String message) {
         this.user = user;
         this.chat = chat;
-        this.message = message;
+        this.content = message;
         this.sendTime = LocalDateTime.now();
-        this.read = false; //메시지를 상대방이 읽지 않음
+        this.isRead = false; //메시지를 상대방이 읽지 않음
         user.getMessages().add(this);
         chat.getMessages().add(this);
         return this;
@@ -67,9 +68,9 @@ public class Message {
     public Message createReadMessage(User user, Chat chat, String message) {
         this.user = user;
         this.chat = chat;
-        this.message = message;
+        this.content = message;
         this.sendTime = LocalDateTime.now();
-        this.read = true; //메시지를 상대방이 읽음
+        this.isRead = true; //메시지를 상대방이 읽음
         user.getMessages().add(this);
         chat.getMessages().add(this);
         return this;

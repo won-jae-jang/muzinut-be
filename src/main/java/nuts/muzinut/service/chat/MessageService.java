@@ -11,10 +11,8 @@ import nuts.muzinut.dto.chat.MessagesDto;
 import nuts.muzinut.exception.NotFoundEntityException;
 import nuts.muzinut.exception.NotFoundMemberException;
 import nuts.muzinut.exception.chat.InvalidChatRoomException;
-import nuts.muzinut.repository.chat.ChatMemberRepository;
 import nuts.muzinut.repository.chat.ChatRepository;
 import nuts.muzinut.repository.chat.MessageRepository;
-import nuts.muzinut.repository.chat.ReadMessageRepository;
 import nuts.muzinut.repository.member.UserRepository;
 import nuts.muzinut.service.board.DetailCommon;
 import nuts.muzinut.service.member.RedisUtil;
@@ -24,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Slf4j
 @Transactional
@@ -111,7 +108,7 @@ public class MessageService extends DetailCommon {
         messageList.forEach(m -> messages.add(
                 Messages.builder()
                         .id(m.getId())
-                        .message(m.getMessage())
+                        .message(m.getContent())
                         .sendTime(m.getSendTime())
                         .nickname(m.getUser().getNickname())
                         .profileImg(encodeFileToBase64(m.getUser().getProfileImgFilename()))

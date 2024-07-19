@@ -14,7 +14,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     //채팅방에 두명이 접속했을 때 모든 메시지를 읽음 상태로 처리한다.
     @Modifying
-    @Query("update Message m set m.read = true where m.chat = :chat")
+    @Query("update Message m set m.isRead = true where m.chat = :chat")
     void updateAllRead(@Param("chat") Chat chat);
 
     /**
@@ -24,7 +24,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
      * @param user: 채팅방에 입장한 유저
      */
     @Modifying
-    @Query("update Message m set m.read = true where m.chat = :chat and m.user != :user")
+    @Query("update Message m set m.isRead = true where m.chat = :chat and m.user != :user")
     void updateOnePersonRead(@Param("chat") Chat chat, @Param("user") User user);
 
     @Query("select m from Message m join fetch m.user where m.chat = :chat order by m.sendTime desc")

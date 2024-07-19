@@ -15,7 +15,8 @@ import java.util.List;
 @Data
 public class DetailEventBoardDto extends DetailBaseDto {
 
-    private Long id;
+    private Long id; //게시판 pk
+    private Long writerId; //작성자 pk
     private String title;
     private String writer; //저장된 게시판 작성자의 프로필 이미지 경로
     private int view;
@@ -31,8 +32,9 @@ public class DetailEventBoardDto extends DetailBaseDto {
         this.view = view;
     }
 
-    public DetailEventBoardDto(Long id , String title, String writer, int view, String quillFilename, String profileImg) {
+    public DetailEventBoardDto(Long id, Long writerId,String title, String writer, int view, String quillFilename, String profileImg) {
         this.id = id;
+        this.writerId = writerId;
         this.title = title;
         this.writer = writer;
         this.view = view;

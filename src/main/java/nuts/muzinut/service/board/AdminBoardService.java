@@ -157,6 +157,7 @@ public class AdminBoardService extends DetailCommon{
         }
 
         DetailBaseDto detailBaseDto = first.get(2, DetailBaseDto.class);
+        detailAdminBoardDto.setWriterId(findAdminBoard.getUser().getId());
         detailAdminBoardDto.setLikeCount(findAdminBoard.getLikeCount()); //좋아요 수 셋팅
         detailAdminBoardDto.setBoardLikeStatus(detailBaseDto.getBoardLikeStatus()); //사용자가 특정 게시판의 좋아요를 눌렀는지 여부
         detailAdminBoardDto.setIsBookmark(detailBaseDto.getIsBookmark()); //사용자가 특정 게시판을 북마크했는지 여부

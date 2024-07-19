@@ -10,6 +10,7 @@ import nuts.muzinut.dto.MessageDto;
 import nuts.muzinut.dto.board.event.DetailEventBoardDto;
 import nuts.muzinut.dto.board.event.EventBoardForm;
 import nuts.muzinut.dto.board.event.EventBoardsDto;
+import nuts.muzinut.dto.board.lounge.DetailLoungeDto;
 import nuts.muzinut.exception.board.BoardNotExistException;
 import nuts.muzinut.exception.board.BoardNotFoundException;
 import nuts.muzinut.exception.NoUploadFileException;
@@ -105,6 +106,20 @@ public class EventBoardController {
 
         return new ResponseEntity<MultiValueMap<String, Object>>(formData, HttpStatus.OK);
     }
+//특정 라운지 조회 및 댓글과 대댓글 불러오기
+@GetMapping(value = "/{id}")
+public ResponseEntity<DetailEventBoardDto> getDetailLounge(@PathVariable Long id) throws JsonProcessingException {
+
+    User findUser = userService.getUserWithUsername().orElse(null);
+    DetailEventBoardDto detailEventBoard = eventBoardService.getDetailEventBoard(id, findUser);
+
+    if (detailEventBoard == null) {
+        throw new BoardNotFoundException("해당 라운지가 존재하지 않습니다");
+    }
+
+    return new ResponseEntity<DetailEventBoardDto>(detailEventBoard, HttpStatus.OK);
+}
+
 
     //모든 이벤트 게시판 조회
     @GetMapping()

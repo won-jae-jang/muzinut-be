@@ -18,7 +18,8 @@ import java.util.List;
 @Data
 public class DetailAdminBoardDto extends DetailBaseDto {
 
-    private Long id;
+    private Long id; //게시판 pk
+    private Long writerId; //작성자 pk
     private int likeCount;
     private String title;
     private String writer = "muzi";

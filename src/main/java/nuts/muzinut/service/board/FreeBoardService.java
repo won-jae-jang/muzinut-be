@@ -109,7 +109,7 @@ public class FreeBoardService extends DetailCommon{
         }
 
         DetailFreeBoardDto detailFreeBoardDto =
-                new DetailFreeBoardDto(findFreeBoard.getId() ,findFreeBoard.getTitle(),
+                new DetailFreeBoardDto(findFreeBoard.getId(), findFreeBoard.getUser().getId(),findFreeBoard.getTitle(),
                         findFreeBoard.getUser().getNickname(), view, findFreeBoard.getFilename(),
                         encodeFileToBase64(findFreeBoard.getUser().getProfileImgFilename()));
 

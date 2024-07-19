@@ -9,7 +9,6 @@ import nuts.muzinut.dto.chat.ChatMessage;
 import nuts.muzinut.dto.chat.CreateChatDto;
 import nuts.muzinut.dto.chat.CreateChatForm;
 import nuts.muzinut.dto.chat.MutualFollow;
-import nuts.muzinut.dto.member.UserDto;
 import nuts.muzinut.exception.NotFoundMemberException;
 import nuts.muzinut.service.chat.ChatService;
 import nuts.muzinut.service.chat.MessageService;
@@ -25,7 +24,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -42,7 +40,7 @@ public class ChatController {
         return ChatMessage.builder()
                 .id(roomId)
                 .sender(createMessage.getUser().getNickname())
-                .message(createMessage.getMessage())
+                .message(createMessage.getContent())
                 .build();
     }
 
