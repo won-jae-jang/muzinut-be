@@ -84,13 +84,6 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
         return new ErrorDto(NOT_FOUND.value(), ex.getMessage());
     }
 
-    @ResponseStatus(UNAUTHORIZED)
-    @ExceptionHandler(value = { AlbumHaveNoAuthorizationException.class })
-    @ResponseBody
-    private ErrorDto HaveNoAuthorization(RuntimeException ex, WebRequest request) {
-        return new ErrorDto(UNAUTHORIZED.value(), ex.getMessage());
-    }
-
     @ResponseStatus(REQUEST_ENTITY_TOO_LARGE)
     @ExceptionHandler(value = { LimitPlayNutException.class })
     @ResponseBody

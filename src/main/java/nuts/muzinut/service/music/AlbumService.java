@@ -8,8 +8,8 @@ import nuts.muzinut.domain.member.User;
 import nuts.muzinut.domain.music.*;
 import nuts.muzinut.dto.music.*;
 import nuts.muzinut.exception.AlbumCreateFailException;
-import nuts.muzinut.exception.AlbumHaveNoAuthorizationException;
 import nuts.muzinut.exception.NoDataFoundException;
+import nuts.muzinut.exception.NotFoundMemberException;
 import nuts.muzinut.repository.member.UserRepository;
 import nuts.muzinut.repository.music.AlbumRepository;
 import nuts.muzinut.repository.music.SongGenreRepository;
@@ -17,6 +17,7 @@ import nuts.muzinut.repository.music.SongRepository;
 import nuts.muzinut.service.encoding.EncodeFiile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -173,6 +174,7 @@ public class AlbumService {
         if (principal instanceof UserDetails) {
             String Username =  ((UserDetails) principal).getUsername();
             Optional<User> finduser = userRepository.findOneWithAuthoritiesByUsername(Username);
+            finduser.orElseThrow(() -> new NotFoundMemberException("로그인을 해주세요"));
             User user = finduser.get();
             return user.getId();
         } else {
@@ -205,9 +207,9 @@ public class AlbumService {
     // 앨범 수정 메소드
     public void updateAlbum(Long albumId, MultipartFile albumImg, AlbumUpdateDto albumUpdateDto) {
         Long userId = getCurrentUsername();
-        albumRepository.findByUser(albumId, userId).orElseThrow(() -> new AlbumHaveNoAuthorizationException("이 유저는 수정 권한이 없습니다"));
+        Optional<Album> optional = albumRepository.findByUser(albumId, userId);
+        optional.orElseThrow(() -> new AccessDeniedException("이 유저는 수정 권한이 없습니다"));
 
-        Optional<Album> optional = albumRepository.findById(albumId);
         Album album = optional.get();
         String albumImgName = album.getAlbumImg();
         albumImgDelete(albumImgName);
@@ -219,26 +221,13 @@ public class AlbumService {
     // 앨범 삭제 메소드
     public void albumDelete(Long albumId) {
         Long userId = getCurrentUsername();
-        albumRepository.findByUser(albumId, userId).orElseThrow(() -> new AlbumHaveNoAuthorizationException("이 유저는 삭제 권한이 없습니다"));
+        Optional<Album> optional = albumRepository.findByUser(albumId, userId);
+        optional.orElseThrow(() -> new AccessDeniedException("이 유저는 삭제 권한이 없습니다"));
 
-        Optional<Album> optional = albumRepository.findById(albumId);
         Album album = optional.get();
         String albumImgName = album.getAlbumImg();
         albumImgDelete(albumImgName);
         albumRepository.deleteById(albumId);
-    }
-
-    // 현재 인증된 사용자의 이름을 반환하는 메소드
-    private User getUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            String Username =  ((UserDetails) principal).getUsername();
-            Optional<User> finduser = userRepository.findOneWithAuthoritiesByUsername(Username);
-            User user = finduser.get();
-            return user;
-        } else {
-            return null;
-        }
     }
 
     // 앨범상세페이지
