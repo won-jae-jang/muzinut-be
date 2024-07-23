@@ -1,19 +1,27 @@
 package nuts.muzinut.service.music;
 
 import lombok.RequiredArgsConstructor;
+import nuts.muzinut.domain.member.User;
 import nuts.muzinut.domain.music.Genre;
 import nuts.muzinut.domain.music.Song;
 import nuts.muzinut.domain.music.SongGenre;
+import nuts.muzinut.domain.music.SongLike;
 import nuts.muzinut.dto.music.*;
 import nuts.muzinut.dto.page.PageDto;
 import nuts.muzinut.exception.NoDataFoundException;
+import nuts.muzinut.exception.NotFoundMemberException;
+import nuts.muzinut.repository.member.UserRepository;
 import nuts.muzinut.repository.music.SongGenreRepository;
+import nuts.muzinut.repository.music.SongLikeRepository;
 import nuts.muzinut.repository.music.SongRepository;
 import nuts.muzinut.service.encoding.EncodeFiile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +43,8 @@ public class SongService {
     private final SongGenreRepository songGenreRepository;
     private final AlbumService albumService;
     private final EncodeFiile encodeFiile;
+    private final UserRepository userRepository;
+    private final SongLikeRepository songLikeRepository;
 
     //최신음악페이지
     public ResponseEntity<PageDto<SongPageDto>> getNewSongs(int pageable) {
@@ -139,12 +149,7 @@ public class SongService {
     public List<SongPageDto> getAlbumImg(List<SongPageDto> content) throws IOException {
         List<SongPageDto> songList = new ArrayList<>();
         for (SongPageDto songPageDto : content) {
-            File file = new File(fileDir + "/albumImg/" + songPageDto.getAlbumImg());
-            // 파일이 없는 경우 예외 처리
-            if (!file.exists() || !file.isFile()) {
-                throw new NoDataFoundException("파일이 존재 하지 않습니다");
-            }
-            String encodedFile = encodeFiile.encodeFileToBase64(file);
+            String encodedFile = encodeFiile.encoding(songPageDto.getAlbumImg(),"album");
             songPageDto.setAlbumImg(encodedFile);
             songList.add(songPageDto);
         }
@@ -153,6 +158,14 @@ public class SongService {
 
     //음악상세페이지
     public ResponseEntity<SongDetaillResultDto> getSongDetail(Long id){
+        Long userId = getCurrentUsername();
+        Optional<Song> songby = songRepository.findById(id);
+        Song song = songby.get();
+        Optional<SongLike> bySongLike = songLikeRepository.findBySongLikeUser(song, userId);
+        boolean songLikeTarget = false; // 종아요 확인 여부 false 디폴드
+        if(bySongLike.isPresent()){ // 사용자가 좋아요를 눌렀는지 확인 하고 값이 있으면 true 저장
+            songLikeTarget = true;
+        }
         List<SongDetailDto> songDetailDtos = songRepository.songDetail(id);
         List<SongGenreDto> songGenreDtos = songRepository.songDetailGenre(id);
 
@@ -167,13 +180,8 @@ public class SongService {
         }
 
         SongDetailDto result = songDetailDtos.get(0);
-        File file = new File(fileDir + "/albumImg/" + result.getAlbumImg());
-        // 파일이 없는 경우 예외 처리
-        if (!file.exists() || !file.isFile()) {
-            throw new NoDataFoundException("파일이 존재 하지 않습니다");
-        }
         try {
-            String encodedFile = encodeFiile.encodeFileToBase64(file);
+            String encodedFile = encodeFiile.encoding(result.getAlbumImg(),"album");
             result.setAlbumImg(encodedFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -184,7 +192,7 @@ public class SongService {
                 result.getNickname(), result.getLikeCount(),
                 result.getLyrics(), result.getComposer(),
                 result.getLyricist(), result.getAlbumId(),
-                genres
+                genres, songLikeTarget
         );
 
         return new ResponseEntity<>(totalData, HttpStatus.OK);
@@ -216,7 +224,10 @@ public class SongService {
     // 곡 수정 메소드
     @Transactional
     public void updateSong(Long songId, SongUpdateDto songUpdateDto, MultipartFile songFile) {
-        Optional<Song> optional = songRepository.findById(songId);
+        Long userId = getCurrentUsername();
+        Optional<Song> optional = songRepository.findByUser(songId, userId);
+        optional.orElseThrow(() -> new AccessDeniedException("이 유저는 수정 권한이 없습니다"));
+
         Song song = optional.get();
         songFileDelete(song.getFileName());
         String songFileName = saveSongFile(songFile);
@@ -237,10 +248,25 @@ public class SongService {
     // 곡 삭제 메소드
     @Transactional
     public void songDelete(Long songId) {
-        Optional<Song> optional = songRepository.findById(songId);
+        Long userId = getCurrentUsername();
+        Optional<Song> optional = songRepository.findByUser(songId, userId);
+        optional.orElseThrow(() -> new AccessDeniedException("이 유저는 수정 권한이 없습니다"));
+
         Song song = optional.get();
         songFileDelete(song.getFileName());
         songRepository.delete(song);
     }
 
+    // 현재 인증된 사용자의 이름을 반환하는 메소드
+    private Long getCurrentUsername() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            String Username =  ((UserDetails) principal).getUsername();
+            Optional<User> finduser = userRepository.findOneWithAuthoritiesByUsername(Username);
+            User user = finduser.get();
+            return user.getId();
+        } else {
+            return -1L;
+        }
+    }
 }

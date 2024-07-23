@@ -21,4 +21,5 @@ public class SongDetaillResultDto {
     private String lyricist;
     private Long albumId;
     private List<Genre> genres;
+    private boolean like;
 }

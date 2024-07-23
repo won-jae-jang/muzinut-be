@@ -12,4 +12,5 @@ public class HotArtistDto {
     private String nickname;
     private Long follower;
     private String img;
+    private Boolean isFollow = null;
 }

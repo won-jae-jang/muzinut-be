@@ -105,7 +105,7 @@ public class LoungeService extends DetailCommon{
         }
 
         DetailLoungeDto detailLoungeDto = new DetailLoungeDto(findLounge.getId(), findLounge.getUser().getNickname(),
-                view ,findLounge.getFilename(), encodeFileToBase64(findLounge.getUser().getProfileImgFilename()));
+                view ,findLounge.getFilename(), encodeFileToBase64(findLounge.getUser().getProfileImgFilename()), findLounge.getCreatedDt());
 
         DetailBaseDto detailBaseDto = first.get(2, DetailBaseDto.class);
         detailLoungeDto.setLikeCount(findBoard.getLikeCount()); //좋아요 수 셋팅

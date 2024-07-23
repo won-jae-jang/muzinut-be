@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import nuts.muzinut.dto.board.DetailBaseDto;
 import nuts.muzinut.dto.board.comment.CommentDto;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class DetailEventBoardDto extends DetailBaseDto {
     private String quillFilename;
     private String profileImg;
     private int likeCount;
+    private LocalDateTime createdDt;
 
     private List<CommentDto> comments = new ArrayList<>();
 
@@ -32,7 +34,8 @@ public class DetailEventBoardDto extends DetailBaseDto {
         this.view = view;
     }
 
-    public DetailEventBoardDto(Long id, Long writerId,String title, String writer, int view, String quillFilename, String profileImg) {
+    public DetailEventBoardDto(Long id, Long writerId,String title, String writer, int view, String quillFilename,
+                               String profileImg, LocalDateTime createdDt) {
         this.id = id;
         this.writerId = writerId;
         this.title = title;
@@ -40,5 +43,6 @@ public class DetailEventBoardDto extends DetailBaseDto {
         this.view = view;
         this.quillFilename = quillFilename;
         this.profileImg = profileImg;
+        this.createdDt = createdDt;
     }
 }

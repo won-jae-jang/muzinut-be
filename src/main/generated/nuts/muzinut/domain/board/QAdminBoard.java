@@ -35,7 +35,8 @@ public class QAdminBoard extends EntityPathBase<AdminBoard> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDt;
 
-    public final StringPath filename = createString("filename");
+    //inherited
+    public final StringPath filename;
 
     //inherited
     public final NumberPath<Long> id;
@@ -80,6 +81,7 @@ public class QAdminBoard extends EntityPathBase<AdminBoard> {
         this.bookmarks = _super.bookmarks;
         this.comments = _super.comments;
         this.createdDt = _super.createdDt;
+        this.filename = _super.filename;
         this.id = _super.id;
         this.likeCount = _super.likeCount;
         this.likes = _super.likes;

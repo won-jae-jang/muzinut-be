@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,4 +52,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // 유저가 북마크한 게시글 제목 조회
     @Query("select b.title from Board b join b.bookmarks bm where bm.user.id = :userId")
     List<String> findBookmarkTitlesByUserId(@Param("userId") Long userId);
+
+    @Transactional
+    @Modifying
+    @Query("update User u set u.vote = 10 where u.vote < 10")
+    void resetUserVote();
+
+    @Transactional
+    @Modifying
+    @Query("update User u set u.receiveVote = 0")
+    void resetUserReceiveVote();
 }

@@ -7,6 +7,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
+import nuts.muzinut.domain.board.Board;
 import nuts.muzinut.dto.mainpage.*;
 import org.springframework.stereotype.Repository;
 
@@ -17,6 +18,7 @@ import static nuts.muzinut.domain.music.QAlbum.*;
 import static nuts.muzinut.domain.music.QSong.*;
 import static nuts.muzinut.domain.music.QPlayView.*;
 import static nuts.muzinut.domain.member.QFollow.*;
+import static nuts.muzinut.domain.board.QBoard.*;
 
 @RequiredArgsConstructor
 @Repository
@@ -55,6 +57,7 @@ public class MainPageRepository {
                 .from(user)
                 .leftJoin(follow)
                 .on(user.id.eq(follow.followingMemberId))
+                .having(follow.followingMemberId.count().gt(0))
                 .groupBy(user.id)
                 .orderBy(follow.followingMemberId.count().desc())
                 .limit(5)
@@ -94,6 +97,7 @@ public class MainPageRepository {
                  "WHERE b.dtype = 'FreeBoard' OR b.dtype = 'RecruitBoard'" +
                 "ORDER BY b.view DESC " +
                 "LIMIT 5 ";
+
         Query nativeQuery = em.createNativeQuery(sql);
         return nativeQuery.getResultList();
     }

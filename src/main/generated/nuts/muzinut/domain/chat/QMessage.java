@@ -20,15 +20,15 @@ public class QMessage extends EntityPathBase<Message> {
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QMessage message1 = new QMessage("message1");
+    public static final QMessage message = new QMessage("message");
 
     public final QChat chat;
 
+    public final StringPath content = createString("content");
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath message = createString("message");
-
-    public final BooleanPath read = createBoolean("read");
+    public final BooleanPath isRead = createBoolean("isRead");
 
     public final ListPath<ReadMessage, QReadMessage> readMessages = this.<ReadMessage, QReadMessage>createList("readMessages", ReadMessage.class, QReadMessage.class, PathInits.DIRECT2);
 

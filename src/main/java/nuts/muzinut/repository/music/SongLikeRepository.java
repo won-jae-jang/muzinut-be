@@ -16,4 +16,7 @@ public interface SongLikeRepository extends JpaRepository<SongLike, Long> {
 
     @Query("select sl from SongLike sl join sl.user u where sl.song = :song and u = :user")
     Optional<SongLike> findBySongLike(@Param("song")Song song, @Param("user")User user);
+
+    @Query("select sl from SongLike sl join sl.user u where sl.song = :song and u.id = :user")
+    Optional<SongLike> findBySongLikeUser(@Param("song")Song song, @Param("user")Long userId);
 }

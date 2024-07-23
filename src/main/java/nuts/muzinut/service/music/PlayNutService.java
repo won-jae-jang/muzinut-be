@@ -137,13 +137,8 @@ public class PlayNutService {
         }
         List<PlayNutMusicDto> playNutMusicDtos = new ArrayList<>();
         for (PlayNutMusicDto totalDatum : totalData) {
-            File file = new File(fileDir + "/albumImg/" + totalDatum.getAlbumImg());
-            // 파일이 없는 경우 예외 처리
-            if (!file.exists() || !file.isFile()) {
-                throw new NoDataFoundException("파일이 존재 하지 않습니다");
-            }
             try {
-                String encodedFile = encodeFiile.encodeFileToBase64(file);
+                String encodedFile = encodeFiile.encoding(totalDatum.getAlbumImg(),"album");
                 totalDatum.setAlbumImg(encodedFile);
                 playNutMusicDtos.add(totalDatum);
             } catch (IOException e) {

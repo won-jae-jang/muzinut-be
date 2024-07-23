@@ -2,6 +2,7 @@ package nuts.muzinut.controller.music;
 
 
 import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
 import nuts.muzinut.dto.music.AlbumDetaillResultDto;
 import nuts.muzinut.dto.music.AlbumDto;
 import nuts.muzinut.dto.music.AlbumUpdateDto;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/album")
 public class AlbumController {
@@ -37,6 +39,11 @@ public class AlbumController {
             @RequestPart("songFiles") List<MultipartFile> songFiles,
             @RequestPart("albumData") AlbumDto albumData
     ) throws IOException {
+        // 곡 파일의 갯수와 곡 정보의 갯수가 다를때 Exception
+        if (songFiles.size() != albumData.getSongs().size()) throw new AlbumCreateFailException("등록하려는 음원 파일의 갯수와 음원 파일 정보의 갯수가 다릅니다.");
+        // 각 곡 파일의 이름이 서로 같은지 확인 후 Exception
+        albumService.isSongFileSameName(songFiles);
+
         // 앨범 이미지 저장
         String storeAlbumImg = albumService.saveAlbumImg(albumImg);
         // 각 곡들 저장
@@ -46,6 +53,8 @@ public class AlbumController {
         if(albumId == null) throw new AlbumCreateFailException("앨범 등록에 실패하였습니다. (Entity Create Error)");
         Map<String, Long> body = new HashMap<>();
         body.put("albumId", albumId);
+
+        log.info("upload information : {}", body);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(body);

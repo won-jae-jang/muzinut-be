@@ -5,10 +5,7 @@ import nuts.muzinut.domain.chat.Chat;
 import nuts.muzinut.domain.chat.Message;
 import nuts.muzinut.domain.member.User;
 import nuts.muzinut.dto.MessageDto;
-import nuts.muzinut.dto.chat.ChatMessage;
-import nuts.muzinut.dto.chat.CreateChatDto;
-import nuts.muzinut.dto.chat.CreateChatForm;
-import nuts.muzinut.dto.chat.MutualFollow;
+import nuts.muzinut.dto.chat.*;
 import nuts.muzinut.exception.NotFoundMemberException;
 import nuts.muzinut.service.chat.ChatService;
 import nuts.muzinut.service.chat.MessageService;
@@ -83,4 +80,18 @@ public class ChatController {
             return ResponseEntity.ok(mutualFollows);
         }
     }
+
+    //채팅방 리스트를 가져오는 메서드
+    @ResponseBody
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @GetMapping("/my-chat")
+    public ResponseEntity<?> getChatRooms() {
+        User user = userService.getUserWithUsername().orElseThrow(() -> new NotFoundMemberException("사용자를 찾을 수 없습니다"));
+        List<ChatRoomListDto> myChatRooms = chatService.getMyChatRooms(user);
+        if (myChatRooms.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new MessageDto("진행중인 채팅목록이 없습니다"));
+        }
+        return ResponseEntity.ok(myChatRooms);
+    }
+
 }

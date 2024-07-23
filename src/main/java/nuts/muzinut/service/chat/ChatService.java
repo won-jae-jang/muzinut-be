@@ -7,6 +7,7 @@ import nuts.muzinut.domain.chat.ChatMember;
 import nuts.muzinut.domain.chat.ChatStatus;
 import nuts.muzinut.domain.chat.Message;
 import nuts.muzinut.domain.member.User;
+import nuts.muzinut.dto.chat.ChatRoomListDto;
 import nuts.muzinut.dto.chat.MutualFollow;
 import nuts.muzinut.exception.NotFoundEntityException;
 import nuts.muzinut.exception.NotFoundMemberException;
@@ -15,6 +16,7 @@ import nuts.muzinut.repository.chat.ChatMemberRepository;
 import nuts.muzinut.repository.chat.ChatRepository;
 import nuts.muzinut.repository.chat.MessageRepository;
 import nuts.muzinut.repository.chat.ReadMessageRepository;
+import nuts.muzinut.repository.chat.query.ChatQueryRepository;
 import nuts.muzinut.repository.member.FollowRepository;
 import nuts.muzinut.repository.member.UserRepository;
 import nuts.muzinut.service.board.DetailCommon;
@@ -39,6 +41,7 @@ public class ChatService extends DetailCommon {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
+    private final ChatQueryRepository queryRepository;
     private final RedisUtil redisUtil;
 
     public Chat findChatRoom(Long id) {
@@ -153,5 +156,14 @@ public class ChatService extends DetailCommon {
             return true; //유효한 채팅방
         }
         return false; //유효하지 않는 채팅방
+    }
+
+    //채팅방 리스트를 가져오는 메서드
+    public List<ChatRoomListDto> getMyChatRooms(User user) {
+        List<ChatRoomListDto> chatRoomList = queryRepository.getChatRoomList(user);
+        if (!chatRoomList.isEmpty()) {
+            chatRoomList.forEach(c -> c.setProfileImg(encodeFileToBase64(c.getProfileImg())));
+        }
+        return chatRoomList;
     }
 }

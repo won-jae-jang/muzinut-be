@@ -18,7 +18,7 @@ public class Chat {
     @Column(name = "chat_id")
     private Long id;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime created_dt = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)

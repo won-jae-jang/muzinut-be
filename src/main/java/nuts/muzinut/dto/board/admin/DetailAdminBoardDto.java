@@ -9,6 +9,7 @@ import nuts.muzinut.domain.board.Comment;
 import nuts.muzinut.dto.board.DetailBaseDto;
 import nuts.muzinut.dto.board.comment.CommentDto;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,25 +27,29 @@ public class DetailAdminBoardDto extends DetailBaseDto {
     private String quillFilename;
     private String profileImg; //저장된 게시판 작성자의 프로필 이미지 경로
     private int view;
+    private LocalDateTime createdDt;
 
     private List<CommentDto> comments = new ArrayList<>();
     private List<AdminFilename> adminFilenames = new ArrayList<>();
 
-    public DetailAdminBoardDto(String title, int view, List<AdminUploadFile> files, String quillFilename, String profileImg) {
+    public DetailAdminBoardDto(String title, int view, List<AdminUploadFile> files, String quillFilename, String profileImg
+            ,LocalDateTime createdDt) {
         this.title = title;
         this.view = view;
         this.quillFilename = quillFilename;
         this.profileImg = profileImg;
+        this.createdDt = createdDt;
         for (AdminUploadFile file : files) {
             this.adminFilenames.add(new AdminFilename(file.getStoreFilename(), file.getOriginFilename(), file.getId()));
         }
     }
 
-    public DetailAdminBoardDto(String title, int view, String quillFilename, String profileImg) {
+    public DetailAdminBoardDto(String title, int view, String quillFilename, String profileImg, LocalDateTime createdDt) {
         this.title = title;
         this.view = view;
         this.quillFilename = quillFilename;
         this.profileImg = profileImg;
+        this.createdDt = createdDt;
     }
 
 

@@ -10,6 +10,7 @@ import nuts.muzinut.dto.board.admin.AdminFilename;
 import nuts.muzinut.dto.board.comment.CommentDto;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class DetailFreeBoardDto extends DetailBaseDto {
     private int view;
     private String quillFilename;
     private String profileImg;
+    private LocalDateTime createdDt;
 
     private List<CommentDto> comments = new ArrayList<>();
     private int likeCount;
@@ -36,7 +38,8 @@ public class DetailFreeBoardDto extends DetailBaseDto {
         this.view = view;
     }
 
-    public DetailFreeBoardDto(Long id, Long writerId,String title, String writer, int view, String quillFilename, String profileImg) {
+    public DetailFreeBoardDto(Long id, Long writerId,String title, String writer, int view, String quillFilename,
+                              String profileImg, LocalDateTime createdDt) {
         this.id = id;
         this.writerId = writerId;
         this.title = title;
@@ -44,5 +47,6 @@ public class DetailFreeBoardDto extends DetailBaseDto {
         this.view = view;
         this.quillFilename = quillFilename;
         this.profileImg = profileImg;
+        this.createdDt = createdDt;
     }
 }

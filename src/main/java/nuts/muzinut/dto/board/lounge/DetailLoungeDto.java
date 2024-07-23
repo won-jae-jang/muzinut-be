@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import nuts.muzinut.dto.board.DetailBaseDto;
 import nuts.muzinut.dto.board.comment.CommentDto;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class DetailLoungeDto extends DetailBaseDto {
     private int commentSize;
     private String quillFilename;
     private int likeCount;
+    private LocalDateTime createdDt;
 
     private List<CommentDto> comments = new ArrayList<>();
 
@@ -28,11 +30,12 @@ public class DetailLoungeDto extends DetailBaseDto {
         this.writer = writer;
     }
 
-    public DetailLoungeDto(Long id, String writer, int view, String quillFilename, String profileImg) {
+    public DetailLoungeDto(Long id, String writer, int view, String quillFilename, String profileImg, LocalDateTime createdDt) {
         this.id = id;
         this.writer = writer;
         this.quillFilename = quillFilename;
         this.profileImg = profileImg;
+        this.createdDt = createdDt;
     }
 
     // comments 리스트를 설정 & 댓글 갯수 설정하는 메서드

@@ -10,14 +10,17 @@ import nuts.muzinut.service.encoding.EncodeFiile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 
 @RequiredArgsConstructor
@@ -30,26 +33,75 @@ public class MainPageService {
     @Value("${spring.file.dir}")
     private String fileDir;
 
-    // 메인페이지 메인 메소드
-    public ResponseEntity<MainTotalDto> findMainTotalData(){
+    // 인기 TOP10 음악
+    public ResponseEntity<Map<String ,List<HotSongDto>>> findTOP10Songs(){
         List<HotSongDto> top10Songs = mainPageRepository.findTOP10Song();
-        List<NewSongDto> newSongs = mainPageRepository.findNewSong();
-        List<HotArtistDto> top5Artists = mainPageRepository.findTOP5Artist();
+        if (top10Songs.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         try {
-            List<HotSongDto> HotSongList = top10Img(top10Songs);
-            List<NewSongDto> newSongList = newSongImg(newSongs);
-            List<HotArtistDto> hotArtistList = top5ArtistImg(top5Artists);
-            List<HotBoardDto> hotBoards = findMainHotBoard();
-            NewBoardDto newBoard = findMainNewBoard();
-            // 데이터가 없는 경우 예외 처리
-            if (top10Songs.isEmpty() && newSongs.isEmpty() && top5Artists.isEmpty() && hotBoards.isEmpty() && newBoard.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            MainTotalDto totalData = new MainTotalDto(HotSongList, newSongList, hotArtistList, hotBoards, newBoard);
-            return new ResponseEntity<MainTotalDto>(totalData,HttpStatus.OK);
+            List<HotSongDto> hotSongList = top10Img(top10Songs);
+            Map<String ,List<HotSongDto>> body = new HashMap<>();
+            body.put("top10Songs", hotSongList);
+            return new ResponseEntity<>(body, HttpStatus.OK);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+    }
+
+    // 최신 음악
+    public ResponseEntity<Map<String ,List<NewSongDto>>> findNewSongs(){
+        List<NewSongDto> newSongs = mainPageRepository.findNewSong();
+        if (newSongs.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        try {
+            List<NewSongDto> newSongList = newSongImg(newSongs);
+            Map<String ,List<NewSongDto>> body = new HashMap<>();
+            body.put("newSongs", newSongs);
+            return new ResponseEntity<>(body, HttpStatus.OK);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // 인기 TOP5 아티스트
+    public ResponseEntity<Map<String ,List<HotArtistDto>>> findTOP5Artists(){
+        List<HotArtistDto> top5Artists = mainPageRepository.findTOP5Artist();
+        if (top5Artists.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        try {
+            List<HotArtistDto> hotArtistList = top5ArtistImg(top5Artists);
+            Map<String ,List<HotArtistDto>> body = new HashMap<>();
+            body.put("top5Artists", hotArtistList);
+            return new ResponseEntity<>(body, HttpStatus.OK);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // 인기 게시판
+    public ResponseEntity<Map<String ,List<HotBoardDto>>> findHotBoards(){
+        List<HotBoardDto> hotBoards = findMainHotBoard();
+        if (hotBoards.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        Map<String ,List<HotBoardDto>> body = new HashMap<>();
+        body.put("hotBoards", hotBoards);
+        return new ResponseEntity<>(body, HttpStatus.OK);
+    }
+
+    // 최신 게시판
+    public ResponseEntity<Map<String ,NewBoardDto>> findNewBoard(){
+        NewBoardDto newBoard = findMainNewBoard();
+        if (newBoard.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        Map<String ,NewBoardDto> body = new HashMap<>();
+        body.put("newBoard", newBoard);
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
 
