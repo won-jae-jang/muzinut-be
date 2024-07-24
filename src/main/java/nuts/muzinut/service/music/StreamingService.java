@@ -17,7 +17,6 @@ import java.nio.file.Paths;
 @RequiredArgsConstructor
 public class StreamingService {
     private final SongRepository songRepository;
-    private final Path musicLocation = Paths.get("/Users/jyh/Desktop/project/muzinut-be/file/songFile");
     @Value("${spring.file.dir}")
     private String fileDir;
     public Resource streamingSong(Long songId) {
@@ -25,6 +24,7 @@ public class StreamingService {
         if(songRepository.findById(songId).isEmpty()) throw new NotFoundEntityException("요청하신 songId(" + songId + ") 에 해당하는 Entity가 존재하지 않습니다.");
 
         String songName = songRepository.findById(songId).get().getFileName();
+        Path musicLocation = Paths.get(fileDir + "songFile");
         Path songPath = musicLocation.resolve(songName).normalize();
         Resource resource;
         try {
