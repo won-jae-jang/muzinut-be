@@ -62,11 +62,11 @@ public class ProfileController {
     public ResponseEntity<?> getUserProfileLounge(@RequestParam("userId") Long userId) throws IOException {
         ProfileLoungeDto profileLoungeDto = profileService.getLoungeTab(userId, 0);
 
-        for (ProfileLoungesForm l : profileLoungeDto.getLoungesForms()) {
-            String fullPath = fileStore.getFullPath(l.getFilename());
-            String content = Files.readString(Paths.get(fullPath));
-            l.setContent(content); // 파일의 내용을 설정
-        }
+//        for (ProfileLoungesForm l : profileLoungeDto.getLoungesForms()) {
+//            String fullPath = fileStore.getFullPath(l.getFilename());
+//            String content = Files.readString(Paths.get(fullPath));
+//            l.setContent(content); // 파일의 내용을 설정
+//        }
 
         return ResponseEntity.ok(profileLoungeDto);
     }
@@ -141,7 +141,7 @@ public class ProfileController {
             String changeFilename = fileStore.updateFile(quillFile, lounge.getFilename());
             loungeService.updateLounge(lounge.getId(), changeFilename); //라운지 게시판 저장
             HttpHeaders header = new HttpHeaders();
-            header.setLocation(URI.create("/profile/lounge/" + lounge.getId())); //수정한 게시판으로 리다이렉트
+            header.setLocation(URI.create("/profile/lounge?userId=" + user.getId())); // 라운지 탭으로 리다이렉트
 
             return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
                     .headers(header)

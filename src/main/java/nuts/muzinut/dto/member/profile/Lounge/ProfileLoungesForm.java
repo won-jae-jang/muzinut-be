@@ -17,7 +17,6 @@ public class ProfileLoungesForm {
     private String filename;
     private LocalDateTime createdDt;
     private int like;
-    private String content; // 파일의 내용을 저장할 필드 추가
 
     private int commentSize;
     private List<CommentDto> comments = new ArrayList<>();
@@ -34,11 +33,6 @@ public class ProfileLoungesForm {
     public void setComments(List<CommentDto> comments) {
         this.comments = comments;
         this.commentSize = comments != null ? comments.size() : 0;
-    }
-
-    // content 설정
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public ProfileLoungesForm(Long id, String writer, String filename, LocalDateTime createdDt, int like) {
