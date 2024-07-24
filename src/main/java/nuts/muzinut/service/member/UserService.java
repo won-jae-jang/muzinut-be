@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import nuts.muzinut.common.Base64Encoding;
 import nuts.muzinut.domain.member.Authority;
 import nuts.muzinut.domain.member.User;
+import nuts.muzinut.domain.music.Playlist;
 import nuts.muzinut.dto.member.UserDto;
 import nuts.muzinut.exception.DuplicateMemberException;
 import nuts.muzinut.exception.InvalidPasswordException;
@@ -16,6 +17,7 @@ import nuts.muzinut.exception.NotFoundEntityException;
 import nuts.muzinut.exception.NotFoundMemberException;
 import nuts.muzinut.repository.member.AuthorityRepository;
 import nuts.muzinut.repository.member.UserRepository;
+import nuts.muzinut.repository.music.PlaylistRepository;
 import nuts.muzinut.service.security.SecurityRole;
 import nuts.muzinut.service.security.SecurityUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService extends Base64Encoding {
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
+    private final PlaylistRepository playlistRepository;
     private final PasswordEncoder passwordEncoder;
 
     // 프로필 이미지 설정
@@ -145,6 +148,8 @@ public class UserService extends Base64Encoding {
                 .activated(true)
                 .build();
 
+        makePlayList(user); //플레이 리스트 만들기
+
         return UserDto.from(userRepository.save(user));
     }
 
@@ -170,7 +175,15 @@ public class UserService extends Base64Encoding {
                 .activated(true)
                 .build();
 
+        makePlayList(user); //플레이 리스트 만들기
+
         return UserDto.from(userRepository.save(user));
+    }
+
+    private void makePlayList(User user) {
+        Playlist playlist = new Playlist();
+        playlist.createPlaylist(user);
+        playlistRepository.save(playlist);
     }
 
     private Authority getAuthority(SecurityRole role) {
