@@ -5,6 +5,7 @@ import nuts.muzinut.exception.NotFoundEntityException;
 import nuts.muzinut.exception.NotFoundFileException;
 import nuts.muzinut.repository.music.SongRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +17,16 @@ import java.nio.file.Paths;
 @RequiredArgsConstructor
 public class StreamingService {
     private final SongRepository songRepository;
+    private final Path musicLocation = Paths.get("/Users/jyh/Desktop/project/muzinut-be/file/songFile");
     @Value("${spring.file.dir}")
     private String fileDir;
-    public UrlResource streamingSong(Long songId) {
+    public Resource streamingSong(Long songId) {
         // 해당하는 songId 가 존재하지 않는 경우 Exception 출력
         if(songRepository.findById(songId).isEmpty()) throw new NotFoundEntityException("요청하신 songId(" + songId + ") 에 해당하는 Entity가 존재하지 않습니다.");
 
         String songName = songRepository.findById(songId).get().getFileName();
-        Path songPath = Paths.get(fileDir + "/songFile/" + songName);
-        UrlResource resource;
+        Path songPath = musicLocation.resolve(songName).normalize();
+        Resource resource;
         try {
             resource = new UrlResource(songPath.toUri());
             // 해당하는 경로에 파일이 존재하지 않는 경우
