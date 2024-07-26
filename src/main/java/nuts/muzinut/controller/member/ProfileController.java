@@ -61,13 +61,6 @@ public class ProfileController {
     @GetMapping(value = "lounge")
     public ResponseEntity<?> getUserProfileLounge(@RequestParam("userId") Long userId) throws IOException {
         ProfileLoungeDto profileLoungeDto = profileService.getLoungeTab(userId, 0);
-
-//        for (ProfileLoungesForm l : profileLoungeDto.getLoungesForms()) {
-//            String fullPath = fileStore.getFullPath(l.getFilename());
-//            String content = Files.readString(Paths.get(fullPath));
-//            l.setContent(content); // 파일의 내용을 설정
-//        }
-
         return ResponseEntity.ok(profileLoungeDto);
     }
 

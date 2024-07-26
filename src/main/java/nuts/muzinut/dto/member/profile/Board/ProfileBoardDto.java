@@ -8,14 +8,14 @@ import java.util.List;
 @Data
 public class ProfileBoardDto extends ProfileDto {
 
-    List<String> boardsTitle;
-    List<String> bookmarkTitle;
+    List<BoardsTitle> boards;
+    List<BookmarkTitle> bookmarks;
 
     // 기본 생성자
-    public ProfileBoardDto(String profileBannerImgName, String profileImgName, String nickname, String intro, Long followingCount, Long followersCount, boolean followStatus, List<String> boardsTitle, List<String> bookmarkTitle) {
+    public ProfileBoardDto(String profileBannerImgName, String profileImgName, String nickname, String intro, Long followingCount, Long followersCount, boolean followStatus, List<BoardsTitle> boards, List<BookmarkTitle> bookmarks) {
         super(profileBannerImgName, profileImgName, nickname, intro, followingCount, followersCount, followStatus);
-        this.boardsTitle = boardsTitle;
-        this.bookmarkTitle = bookmarkTitle;
+        this.boards = boards;
+        this.bookmarks = bookmarks;
     }
 
     // 새로운 생성자: 보드 정보 없이 프로필 정보만 반환

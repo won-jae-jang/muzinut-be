@@ -13,6 +13,8 @@ import nuts.muzinut.domain.music.Song;
 import nuts.muzinut.dto.board.DetailBaseDto;
 import nuts.muzinut.dto.member.profile.Album.ProfileSongDto;
 import nuts.muzinut.dto.member.profile.Album.ProfileAlbumDto;
+import nuts.muzinut.dto.member.profile.Board.BoardsTitle;
+import nuts.muzinut.dto.member.profile.Board.BookmarkTitle;
 import nuts.muzinut.dto.member.profile.Board.ProfileBoardDto;
 import nuts.muzinut.dto.member.profile.Lounge.ProfileLoungeDto;
 import nuts.muzinut.dto.member.profile.Lounge.ProfileLoungesForm;
@@ -227,8 +229,8 @@ public class ProfileService extends DetailCommon {
 
     // 게시글 탭을 보여주는 메소드
     public ProfileBoardDto getBoardTab(Long userId) {
-        List<String> boardsTitle = userRepository.findBoardTitlesByUserId(userId);
-        List<String> bookmarkTitle = userRepository.findBookmarkTitlesByUserId(userId);
+        List<BoardsTitle> boards = userRepository.findBoardDetailsByUserId(userId);
+        List<BookmarkTitle> bookmarks = userRepository.findBookmarkDetailsByUserId(userId);
         ProfileDto profileDto = getUserProfile(userId);
 
         return new ProfileBoardDto(
@@ -239,8 +241,8 @@ public class ProfileService extends DetailCommon {
                 profileDto.getFollowingCount(),
                 profileDto.getFollowersCount(),
                 profileDto.isFollowStatus(),
-                boardsTitle,
-                bookmarkTitle
+                boards,
+                bookmarks
         );
     }
 
