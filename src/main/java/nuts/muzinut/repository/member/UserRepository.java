@@ -1,6 +1,8 @@
 package nuts.muzinut.repository.member;
 
 import nuts.muzinut.domain.member.User;
+import nuts.muzinut.dto.member.profile.Board.BoardsTitle;
+import nuts.muzinut.dto.member.profile.Board.BookmarkTitle;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -40,8 +42,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void updateProfileBannerImg(@Param("bannerFilename") String bannerFilename, @Param("user") User user);
 
     // 유저가 작성한 게시글 제목 조회
-    @Query("select b.title from Board b where b.user.id = :userId")
-    List<String> findBoardTitlesByUserId(@Param("userId") Long userId);
+//    @Query("select b.title from Board b where b.user.id = :userId")
+//    List<String> findBoardTitlesByUserId(@Param("userId") Long userId);
+    @Query("select new nuts.muzinut.dto.member.profile.Board.BoardsTitle(b.id, b.title) from Board b where b.user.id = :userId")
+    List<BoardsTitle> findBoardDetailsByUserId(@Param("userId") Long userId);
 
     //이미 지정된 닉네임인지 확인
     Boolean existsByNickname(String nickname);
@@ -50,8 +54,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByUsername(String username);
 
     // 유저가 북마크한 게시글 제목 조회
-    @Query("select b.title from Board b join b.bookmarks bm where bm.user.id = :userId")
-    List<String> findBookmarkTitlesByUserId(@Param("userId") Long userId);
+//    @Query("select b.title from Board b join b.bookmarks bm where bm.user.id = :userId")
+//    List<String> findBookmarkTitlesByUserId(@Param("userId") Long userId);
+    @Query("select new nuts.muzinut.dto.member.profile.Board.BookmarkTitle(b.id, b.title) from Board b join b.bookmarks bm where bm.user.id = :userId")
+    List<BookmarkTitle> findBookmarkDetailsByUserId(@Param("userId") Long userId);
 
     @Transactional
     @Modifying
