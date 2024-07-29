@@ -19,4 +19,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Optional<Board> findByFilename(String filename);
 
     List<Board> findByUserId(Long userId);
+
+    @Query("SELECT b FROM Board b JOIN b.bookmarks bm WHERE bm.user.id = :userId")
+    List<Board> findBookmarkedBoardsByUserId(@Param("userId") Long userId);
 }
