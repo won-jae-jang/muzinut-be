@@ -17,4 +17,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     String findBoardTypeById(@Param("id") Long id);
 
     Optional<Board> findByFilename(String filename);
+
+    List<Board> findByUserId(Long userId);
 }

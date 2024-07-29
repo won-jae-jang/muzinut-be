@@ -44,8 +44,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // 유저가 작성한 게시글 제목 조회
 //    @Query("select b.title from Board b where b.user.id = :userId")
 //    List<String> findBoardTitlesByUserId(@Param("userId") Long userId);
-    @Query("select new nuts.muzinut.dto.member.profile.Board.BoardsTitle(b.id, b.title) from Board b where b.user.id = :userId")
-    List<BoardsTitle> findBoardDetailsByUserId(@Param("userId") Long userId);
+
+    // 유저가 작성한 게시글 id, 제목 조회
+//    @Query("select new nuts.muzinut.dto.member.profile.Board.BoardsTitle(b.id, b.title) from Board b where b.user.id = :userId")
+//    List<BoardsTitle> findBoardDetailsByUserId(@Param("userId") Long userId);
 
     //이미 지정된 닉네임인지 확인
     Boolean existsByNickname(String nickname);

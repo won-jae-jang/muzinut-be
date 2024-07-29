@@ -12,28 +12,21 @@ import nuts.muzinut.dto.MessageDto;
 import nuts.muzinut.dto.member.profile.Album.ProfileSongDto;
 import nuts.muzinut.dto.member.profile.Board.ProfileBoardDto;
 import nuts.muzinut.dto.member.profile.Lounge.ProfileLoungeDto;
-import nuts.muzinut.dto.member.profile.Lounge.ProfileLoungesForm;
 import nuts.muzinut.dto.member.profile.PlayNut.ProfilePlayNutDto;
 import nuts.muzinut.dto.member.profile.PlayNut.ProfilePlayNutSongDto;
-import nuts.muzinut.exception.board.BoardNotFoundException;
 import nuts.muzinut.exception.NotFoundMemberException;
 import nuts.muzinut.service.board.*;
 import nuts.muzinut.service.member.ProfileService;
 import nuts.muzinut.service.member.UserService;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map;
 
 import static nuts.muzinut.controller.board.FileType.STORE_FILENAME;
@@ -192,11 +185,11 @@ public class ProfileController {
     private String buildUrl(String boardType, Long id) {
         switch (boardType) {
             case "AdminBoard":
-                return "/community/admin-boards/" + id;
+                return "/notice/" + id;
             case "FreeBoard":
                 return "/community/free-boards/" + id;
             case "EventBoard":
-                return "/community/event-boards/" + id;
+                return "/event/" + id;
             case "RecruitBoard":
                 return "/community/recruit-boards/" + id;
             default:

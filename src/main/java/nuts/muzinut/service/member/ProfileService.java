@@ -48,9 +48,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static nuts.muzinut.domain.board.QBoard.board;
-import static nuts.muzinut.domain.board.QLounge.lounge;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -229,7 +226,15 @@ public class ProfileService extends DetailCommon {
 
     // 게시글 탭을 보여주는 메소드
     public ProfileBoardDto getBoardTab(Long userId) {
-        List<BoardsTitle> boards = userRepository.findBoardDetailsByUserId(userId);
+//        List<BoardsTitle> boards = userRepository.findBoardDetailsByUserId(userId);
+        // 유저가 작성한 게시글 조회
+        List<Board> boards = boardRepository.findByUserId(userId);
+
+        // 게시글의 타입을 조회하여 BoardsTitle로 변환
+        List<BoardsTitle> boardsTitles = boards.stream()
+                .map(board -> new BoardsTitle(board.getId(), board.getTitle(), boardRepository.findBoardTypeById(board.getId())))
+                .collect(Collectors.toList());
+
         List<BookmarkTitle> bookmarks = userRepository.findBookmarkDetailsByUserId(userId);
         ProfileDto profileDto = getUserProfile(userId);
 
@@ -241,7 +246,7 @@ public class ProfileService extends DetailCommon {
                 profileDto.getFollowingCount(),
                 profileDto.getFollowersCount(),
                 profileDto.isFollowStatus(),
-                boards,
+                boardsTitles,
                 bookmarks
         );
     }
