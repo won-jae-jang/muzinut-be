@@ -11,4 +11,6 @@ public class BookmarkTitle {
 
     private Long id;
     private String bookmarkTitle;
+    private String boardType;   // 보드 타입 추가
+
 }

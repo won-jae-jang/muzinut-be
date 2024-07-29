@@ -226,7 +226,6 @@ public class ProfileService extends DetailCommon {
 
     // 게시글 탭을 보여주는 메소드
     public ProfileBoardDto getBoardTab(Long userId) {
-//        List<BoardsTitle> boards = userRepository.findBoardDetailsByUserId(userId);
         // 유저가 작성한 게시글 조회
         List<Board> boards = boardRepository.findByUserId(userId);
 
@@ -235,7 +234,14 @@ public class ProfileService extends DetailCommon {
                 .map(board -> new BoardsTitle(board.getId(), board.getTitle(), boardRepository.findBoardTypeById(board.getId())))
                 .collect(Collectors.toList());
 
-        List<BookmarkTitle> bookmarks = userRepository.findBookmarkDetailsByUserId(userId);
+        // 북마크된 게시글 조회
+        List<Board> bookmarkedBoards = boardRepository.findBookmarkedBoardsByUserId(userId);
+
+        // 북마크의 타입을 조회하여 BookmarkTitle로 변환
+        List<BookmarkTitle> bookmarks = bookmarkedBoards.stream()
+                .map(board -> new BookmarkTitle(board.getId(), board.getTitle(), boardRepository.findBoardTypeById(board.getId())))
+                .collect(Collectors.toList());
+
         ProfileDto profileDto = getUserProfile(userId);
 
         return new ProfileBoardDto(
