@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProfileAlbumDto {
     
-    private String mainSongAlbumImage;
+    private String albumImage;
     private String albumTitle;
 }

@@ -11,5 +11,6 @@ public class BoardsTitle {
 
     private Long id;
     private String boardTitle;
+    private String boardType;   // 보드 타입 추가
 
 }
