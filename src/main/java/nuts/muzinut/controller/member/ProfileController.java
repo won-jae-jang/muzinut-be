@@ -95,16 +95,32 @@ public class ProfileController {
 
 //    // 프로필 페이지 - 앨범 탭(기본), 프로필 이미지 클릭했을 때
 //    @GetMapping
-//    public ResponseEntity<?> getUserProfileAlbum(@RequestParam("userId") Long userId) throws JsonProcessingException {
+//    public ResponseEntity<?> getUserProfileAlbum(@RequestParam(value = "userId", required = false) Long userId) throws JsonProcessingException {
+//        if (userId == null) {
+//            String username = profileService.getCurrentUsername();
+//            if (username.equals("anonymousUser")) {
+//                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//            }
+//            userId = userService.findUserByUsername(username).getId();
+//        }
 //        ProfileSongDto albumTab = profileService.getAlbumTab(userId);
 //        return new ResponseEntity<ProfileSongDto>(albumTab, HttpStatus.OK);
 //    }
+//
 //    // 프로필 페이지 - 앨범 탭(기본), 마이페이지 버튼 클릭했을 때
 //    @GetMapping("/me")
-//    public ResponseEntity<?> getMyProfileAlbum(@RequestParam("nickname") String nickname) throws JsonProcessingException {
+//    public ResponseEntity<?> getMyProfileAlbum(@RequestParam(value = "nickname", required = false) String nickname) throws JsonProcessingException {
+//        if (nickname == null) {
+//            String username = profileService.getCurrentUsername();
+//            if (username.equals("anonymousUser")) {
+//                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//            }
+//            nickname = userService.findUserByUsername(username).getNickname();
+//        }
 //        ProfileSongDto albumTab = profileService.getAlbumTabByNickname(nickname);
 //        return new ResponseEntity<>(albumTab, HttpStatus.OK);
 //    }
+
 //
 //
 //    // 프로필 페이지 - 라운지 탭
