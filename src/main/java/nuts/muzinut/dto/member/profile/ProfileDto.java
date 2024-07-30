@@ -7,6 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class ProfileDto {
 
+    private Long userId; // 회원 pk
     private String profileBannerImgName;
     private String profileImgName;
     private String nickname;

@@ -16,6 +16,7 @@ public class CommentDto {
     private boolean likeCommentStatus = false; //비회원일 수도 있으므로 false 로 초기화
     private String content;
     private String commentWriter;
+    private Long commentWriterId; //작성자 pk
     private String commentProfileImg; //댓글을 작성한 사람의 프로필 이미지
     private LocalDateTime createdDt;
     private int likeCount;
@@ -23,21 +24,23 @@ public class CommentDto {
     private List<ReplyDto> replies = new ArrayList<>();
 
     @QueryProjection
-    public CommentDto(Long id, String content, String commentWriter,
+    public CommentDto(Long id, String content, String commentWriter,Long commentWriterId,
                       LocalDateTime createdDt, String commentProfileImg, int likeCount) {
         this.id = id;
         this.content = content;
         this.commentWriter = commentWriter;
+        this.commentWriterId = commentWriterId;
         this.commentProfileImg = commentProfileImg;
         this.createdDt = createdDt;
         this.likeCount = likeCount;
     }
 
-    public CommentDto(Long id, String content, String commentWriter, LocalDateTime createdDt,
+    public CommentDto(Long id, String content, String commentWriter, Long commentWriterId, LocalDateTime createdDt,
                       String commentProfileImg, boolean likeCommentStatus, int likeCount) {
         this.id = id;
         this.content = content;
         this.commentWriter = commentWriter;
+        this.commentWriterId = commentWriterId;
         this.commentProfileImg = commentProfileImg;
         this.createdDt = createdDt;
         this.likeCommentStatus = likeCommentStatus;

@@ -12,14 +12,14 @@ public class ProfileBoardDto extends ProfileDto {
     List<BookmarkTitle> bookmarks;
 
     // 기본 생성자
-    public ProfileBoardDto(String profileBannerImgName, String profileImgName, String nickname, String intro, Long followingCount, Long followersCount, boolean followStatus, List<BoardsTitle> boards, List<BookmarkTitle> bookmarks) {
-        super(profileBannerImgName, profileImgName, nickname, intro, followingCount, followersCount, followStatus);
+    public ProfileBoardDto(Long userId, String profileBannerImgName, String profileImgName, String nickname, String intro, Long followingCount, Long followersCount, boolean followStatus, List<BoardsTitle> boards, List<BookmarkTitle> bookmarks) {
+        super(userId, profileBannerImgName, profileImgName, nickname, intro, followingCount, followersCount, followStatus);
         this.boards = boards;
         this.bookmarks = bookmarks;
     }
 
     // 새로운 생성자: 보드 정보 없이 프로필 정보만 반환
-    public ProfileBoardDto(String profileBannerImgName, String profileImgName, String nickname, String intro, Long followingCount, Long followersCount, boolean followStatus) {
-        super(profileBannerImgName, profileImgName, nickname, intro, followingCount, followersCount, followStatus);
+    public ProfileBoardDto(Long userId, String profileBannerImgName, String profileImgName, String nickname, String intro, Long followingCount, Long followersCount, boolean followStatus) {
+        super(userId, profileBannerImgName, profileImgName, nickname, intro, followingCount, followersCount, followStatus);
     }
 }

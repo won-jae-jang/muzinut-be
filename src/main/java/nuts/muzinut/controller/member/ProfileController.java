@@ -43,7 +43,7 @@ public class ProfileController {
     private final FileStore fileStore;
     private final ObjectMapper objectMapper;
 
-    // 프로필 페이지 - 앨범 탭(기본)
+    // 프로필 페이지 - 앨범 탭(기본), 프로필 이미지 클릭했을 때
     @GetMapping
     public ResponseEntity<?> getUserProfileAlbum(@RequestParam("userId") Long userId) throws JsonProcessingException {
         ProfileSongDto albumTab = profileService.getAlbumTab(userId);

@@ -21,8 +21,8 @@ public class ProfileLoungeDto extends ProfileDto {
     }
 
     // 기존 생성자
-    public ProfileLoungeDto(String profileBannerImgName, String profileImgName, String nickname, String intro, Long followingCount, Long followersCount, boolean followStatus, List<ProfileLoungesForm> loungesForms, int currentPage, int totalPage, Long totalContent) {
-        super(profileBannerImgName, profileImgName, nickname, intro, followingCount, followersCount, followStatus);
+    public ProfileLoungeDto(Long userId, String profileBannerImgName, String profileImgName, String nickname, String intro, Long followingCount, Long followersCount, boolean followStatus, List<ProfileLoungesForm> loungesForms, int currentPage, int totalPage, Long totalContent) {
+        super(userId, profileBannerImgName, profileImgName, nickname, intro, followingCount, followersCount, followStatus);
         this.loungesForms = loungesForms;
         this.currentPage = currentPage;
         this.totalPage = totalPage;
@@ -30,7 +30,7 @@ public class ProfileLoungeDto extends ProfileDto {
     }
 
     // 새로운 생성자: 라운지 정보 없이 프로필 정보만 반환
-    public ProfileLoungeDto(String profileBannerImgName, String profileImgName, String nickname, String intro, Long followingCount, Long followersCount, boolean followStatus) {
-        super(profileBannerImgName, profileImgName, nickname, intro, followingCount, followersCount, followStatus);
+    public ProfileLoungeDto(Long userId, String profileBannerImgName, String profileImgName, String nickname, String intro, Long followingCount, Long followersCount, boolean followStatus) {
+        super(userId, profileBannerImgName, profileImgName, nickname, intro, followingCount, followersCount, followStatus);
     }
 }
