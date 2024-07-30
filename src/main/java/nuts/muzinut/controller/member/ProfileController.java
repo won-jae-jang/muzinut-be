@@ -43,23 +43,30 @@ public class ProfileController {
     private final FileStore fileStore;
     private final ObjectMapper objectMapper;
 
-    // 프로필 페이지 - 앨범 탭(기본)
-    @GetMapping
-    public ResponseEntity<?> getUserProfileAlbum(@RequestParam("userId") Long userId) throws JsonProcessingException {
+    // 프로필 페이지 - 앨범 탭(기본), 프로필 이미지 클릭했을 때
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getUserProfileAlbum(@PathVariable Long userId) throws JsonProcessingException {
         ProfileSongDto albumTab = profileService.getAlbumTab(userId);
         return new ResponseEntity<ProfileSongDto>(albumTab, HttpStatus.OK);
     }
+    // 프로필 페이지 - 앨범 탭(기본), 마이페이지 버튼 클릭했을 때
+    @GetMapping("/me")
+    public ResponseEntity<?> getMyProfileAlbum(@RequestParam("nickname") String nickname) throws JsonProcessingException {
+        ProfileSongDto albumTab = profileService.getAlbumTabByNickname(nickname);
+        return new ResponseEntity<>(albumTab, HttpStatus.OK);
+    }
+
 
     // 프로필 페이지 - 라운지 탭
-    @GetMapping(value = "lounge")
-    public ResponseEntity<?> getUserProfileLounge(@RequestParam("userId") Long userId) throws IOException {
+    @GetMapping(value = "lounge/{userId}")
+    public ResponseEntity<?> getUserProfileLounge(@PathVariable Long userId) throws IOException {
         ProfileLoungeDto profileLoungeDto = profileService.getLoungeTab(userId, 0);
         return ResponseEntity.ok(profileLoungeDto);
     }
 
     // 프로필 페이지 - 게시글 탭
-    @GetMapping("/board")
-    public ResponseEntity<?> getUserProfileBoard(@RequestParam("userId") Long userId) throws JsonProcessingException {
+    @GetMapping("/board/{userId}")
+    public ResponseEntity<?> getUserProfileBoard(@PathVariable Long userId) throws JsonProcessingException {
         String currentUsername = profileService.getCurrentUsername();
         User currentUser = profileService.findUserByUsername(currentUsername);
 
@@ -72,8 +79,8 @@ public class ProfileController {
     }
 
     // 프로필 페이지 - 플리넛 탭
-    @GetMapping("/playnut")
-    public ResponseEntity<?> getUserProfilePlayNuts(@RequestParam("userId") Long userId) throws JsonProcessingException {
+    @GetMapping("/playnut/{userId}")
+    public ResponseEntity<?> getUserProfilePlayNuts(@PathVariable Long userId) throws JsonProcessingException {
         String currentUsername = profileService.getCurrentUsername();
         User currentUser = profileService.findUserByUsername(currentUsername);
 
@@ -84,6 +91,72 @@ public class ProfileController {
             return new ResponseEntity<>(profilePlayNutDto, HttpStatus.OK);
         }
     }
+
+
+//    // 프로필 페이지 - 앨범 탭(기본), 프로필 이미지 클릭했을 때
+//    @GetMapping
+//    public ResponseEntity<?> getUserProfileAlbum(@RequestParam(value = "userId", required = false) Long userId) throws JsonProcessingException {
+//        if (userId == null) {
+//            String username = profileService.getCurrentUsername();
+//            if (username.equals("anonymousUser")) {
+//                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//            }
+//            userId = userService.findUserByUsername(username).getId();
+//        }
+//        ProfileSongDto albumTab = profileService.getAlbumTab(userId);
+//        return new ResponseEntity<ProfileSongDto>(albumTab, HttpStatus.OK);
+//    }
+//
+//    // 프로필 페이지 - 앨범 탭(기본), 마이페이지 버튼 클릭했을 때
+//    @GetMapping("/me")
+//    public ResponseEntity<?> getMyProfileAlbum(@RequestParam(value = "nickname", required = false) String nickname) throws JsonProcessingException {
+//        if (nickname == null) {
+//            String username = profileService.getCurrentUsername();
+//            if (username.equals("anonymousUser")) {
+//                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//            }
+//            nickname = userService.findUserByUsername(username).getNickname();
+//        }
+//        ProfileSongDto albumTab = profileService.getAlbumTabByNickname(nickname);
+//        return new ResponseEntity<>(albumTab, HttpStatus.OK);
+//    }
+
+//
+//
+//    // 프로필 페이지 - 라운지 탭
+//    @GetMapping(value = "lounge")
+//    public ResponseEntity<?> getUserProfileLounge(@RequestParam("userId") Long userId) throws IOException {
+//        ProfileLoungeDto profileLoungeDto = profileService.getLoungeTab(userId, 0);
+//        return ResponseEntity.ok(profileLoungeDto);
+//    }
+//
+//    // 프로필 페이지 - 게시글 탭
+//    @GetMapping("/board")
+//    public ResponseEntity<?> getUserProfileBoard(@RequestParam("userId") Long userId) throws JsonProcessingException {
+//        String currentUsername = profileService.getCurrentUsername();
+//        User currentUser = profileService.findUserByUsername(currentUsername);
+//
+//        if (!currentUser.getId().equals(userId)) {
+//            throw new NotFoundMemberException("본인의 프로필만 접근 가능");
+//        } else {
+//            ProfileBoardDto profileBoardDto = profileService.getBoardTab(userId);
+//            return new ResponseEntity<>(profileBoardDto, HttpStatus.OK);
+//        }
+//    }
+//
+//    // 프로필 페이지 - 플리넛 탭
+//    @GetMapping("/playnut")
+//    public ResponseEntity<?> getUserProfilePlayNuts(@RequestParam("userId") Long userId) throws JsonProcessingException {
+//        String currentUsername = profileService.getCurrentUsername();
+//        User currentUser = profileService.findUserByUsername(currentUsername);
+//
+//        if (!currentUser.getId().equals(userId)) {
+//            throw new NotFoundMemberException("본인의 프로필만 접근 가능");
+//        } else {
+//            ProfilePlayNutDto profilePlayNutDto = profileService.getPlayNutTab(userId);
+//            return new ResponseEntity<>(profilePlayNutDto, HttpStatus.OK);
+//        }
+//    }
 
     // 플리넛 제목 클릭 시 해당 플리넛에 담긴 곡을 보여주는 메서드
     @GetMapping("/playnut/{playNutId}")

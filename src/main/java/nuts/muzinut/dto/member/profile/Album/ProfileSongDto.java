@@ -20,8 +20,8 @@ public class ProfileSongDto extends ProfileDto {
     private List<ProfileAlbumDto> profileAlbumDtos; // 추가
 
     // 기본 생성자
-    public ProfileSongDto(String profileBannerImgName, String profileImgName, String nickname, String intro, Long followingCount, Long followersCount, boolean followStatus, String songTitle, String genre, String lyricist, String composer, int likeCount, String mainSongAlbumImage, List<ProfileAlbumDto> profileAlbumDtos) {
-        super(profileBannerImgName, profileImgName, nickname, intro, followingCount, followersCount, followStatus);
+    public ProfileSongDto(Long userId, String profileBannerImgName, String profileImgName, String nickname, String intro, Long followingCount, Long followersCount, boolean followStatus, String songTitle, String genre, String lyricist, String composer, int likeCount, String mainSongAlbumImage, List<ProfileAlbumDto> profileAlbumDtos) {
+        super(userId, profileBannerImgName, profileImgName, nickname, intro, followingCount, followersCount, followStatus);
         this.songTitle = songTitle;
         this.genre = genre;
         this.lyricist = lyricist;
@@ -32,7 +32,7 @@ public class ProfileSongDto extends ProfileDto {
     }
 
     // 새로운 생성자: 곡 정보 없이 프로필 정보만 반환
-    public ProfileSongDto(String profileBannerImgName, String profileImgName, String nickname, String intro, Long followingCount, Long followersCount, boolean followStatus) {
-        super(profileBannerImgName, profileImgName, nickname, intro, followingCount, followersCount, followStatus);
+    public ProfileSongDto(Long userId, String profileBannerImgName, String profileImgName, String nickname, String intro, Long followingCount, Long followersCount, boolean followStatus) {
+        super(userId,profileBannerImgName, profileImgName, nickname, intro, followingCount, followersCount, followStatus);
     }
 }

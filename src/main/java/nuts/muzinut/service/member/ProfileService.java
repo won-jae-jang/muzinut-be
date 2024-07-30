@@ -62,13 +62,26 @@ public class ProfileService extends DetailCommon {
     private final LoungeQueryRepository queryRepository;
     private final PlayNutRepository playNutRepository;
 
-    // 프로필 페이지 보여주는 메소드
+    // 기존 userId를 통해 프로필 정보를 가져오는 메소드
     public ProfileDto getUserProfile(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundMemberException("존재하지 않는 회원입니다."));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundMemberException("존재하지 않는 회원입니다."));
+        return buildProfileDto(user);
+    }
+
+    // 닉네임을 통해 프로필 정보를 가져오는 메소드
+    public ProfileDto getUserProfileByNickname(String nickname) {
+        User user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new NotFoundMemberException("존재하지 않는 회원입니다."));
+        return buildProfileDto(user);
+    }
+
+    // 프로필 페이지 값 설정
+    public ProfileDto buildProfileDto(User user) {
         validateUser(user);
         // 팔로잉 수, 팔로워 수 가져오기
         Long followingCount = followRepository.countFollowingByUser(user);
-        Long followersCount = followRepository.countFollowerByFollowingMemberId(userId);
+        Long followersCount = followRepository.countFollowerByUser(user);
 
         // 현재 로그인한 사용자 확인
         String currentUsername = getCurrentUsername();
@@ -83,11 +96,12 @@ public class ProfileService extends DetailCommon {
         // 팔로잉 여부
         boolean isFollowing = false;
         if (currentUser != null) {
-            isFollowing = followRepository.existsByUserAndFollowingMemberId(user, userId);
+            isFollowing = followRepository.existsByUserAndFollowingMemberId(currentUser, user.getId());
             log.info("isFollowing = {}", isFollowing);
         }
 
         ProfileDto profileDto = new ProfileDto(
+                user.getId(),
                 user.getProfileBannerImgFilename(),
                 user.getProfileImgFilename(),
                 user.getNickname(),
@@ -117,13 +131,25 @@ public class ProfileService extends DetailCommon {
                 .orElseThrow(() -> new NotFoundMemberException("접근 권한이 없습니다."));
     }
 
-    // 앨범 탭을 보여주는 메소드
+    // 앨범 탭(기본), userId를 통해 프로필 이미지 클릭했을 때
     public ProfileSongDto getAlbumTab(Long userId) {
+        return buildAlbumTab(userRepository.findById(userId).orElseThrow(() -> new NotFoundMemberException("존재하지 않는 회원입니다.")));
+    }
+
+    // 앨범 탭(기본), nickname을 통해 마이페이지 버튼 클릭했을 때
+    public ProfileSongDto getAlbumTabByNickname(String nickname) {
+        return buildAlbumTab(userRepository.findByNickname(nickname).orElseThrow(() -> new NotFoundMemberException("존재하지 않는 회원입니다.")));
+    }
+
+    // 앨범 탭(기본) 값 설정하는 메소드
+    public ProfileSongDto buildAlbumTab(User user) {
+        Long userId = user.getId();
         List<Song> songs = songRepository.findSongsByUserIdOrderByLikesAndId(userId);
         ProfileDto profileDto = getUserProfile(userId);
 
         if (songs.isEmpty()) {
             return new ProfileSongDto(
+                    profileDto.getUserId(),
                     encodeFileToBase64(profileDto.getProfileBannerImgName(), true),
                     encodeFileToBase64(profileDto.getProfileImgName(), false),
                     profileDto.getNickname(),
@@ -150,6 +176,7 @@ public class ProfileService extends DetailCommon {
                 .collect(Collectors.toList());
 
         return new ProfileSongDto(
+                profileDto.getUserId(),
                 encodeFileToBase64(profileDto.getProfileBannerImgName(), true),
                 encodeFileToBase64(profileDto.getProfileImgName(), false),
                 profileDto.getNickname(),
@@ -180,6 +207,7 @@ public class ProfileService extends DetailCommon {
 
         if (lounges.isEmpty()){
             return new ProfileLoungeDto(
+                    profileDto.getUserId(),
                     encodeFileToBase64(profileDto.getProfileBannerImgName(), true),
                     encodeFileToBase64(profileDto.getProfileImgName(), false),
                     profileDto.getNickname(),
@@ -210,6 +238,7 @@ public class ProfileService extends DetailCommon {
                 .collect(Collectors.toList());
 
         return new ProfileLoungeDto(
+                profileDto.getUserId(),
                 encodeFileToBase64(profileDto.getProfileBannerImgName(), true),
                 encodeFileToBase64(profileDto.getProfileImgName(), false),
                 profileDto.getNickname(),
@@ -245,6 +274,7 @@ public class ProfileService extends DetailCommon {
         ProfileDto profileDto = getUserProfile(userId);
 
         return new ProfileBoardDto(
+                profileDto.getUserId(),
                 encodeFileToBase64(profileDto.getProfileBannerImgName(), true),
                 encodeFileToBase64(profileDto.getProfileImgName(), false),
                 profileDto.getNickname(),
@@ -289,6 +319,7 @@ public class ProfileService extends DetailCommon {
 
         if (playNuts.isEmpty()) {
             return new ProfilePlayNutDto(
+                    profileDto.getUserId(),
                     profileDto.getProfileBannerImgName(),
                     profileDto.getProfileImgName(),
                     profileDto.getNickname(),
@@ -303,6 +334,7 @@ public class ProfileService extends DetailCommon {
                     .collect(Collectors.toList());
 
             return new ProfilePlayNutDto(
+                    profileDto.getUserId(),
                     profileDto.getProfileBannerImgName(),
                     profileDto.getProfileImgName(),
                     profileDto.getNickname(),
@@ -339,6 +371,7 @@ public class ProfileService extends DetailCommon {
 
         return new ProfilePlayNutSongDto(
                 new ProfileDto(
+                        user.getId(),
                         encodeFileToBase64(profileDto.getProfileBannerImgName(), true),
                         encodeFileToBase64(profileDto.getProfileImgName(), false),
                         profileDto.getNickname(),

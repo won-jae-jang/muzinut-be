@@ -150,13 +150,13 @@ public class DetailCommon {
             if (user != null) {
                 // 회원인 경우
                 commentDto = new CommentDto(
-                        c.getId(), c.getContent(), c.getUser().getNickname(),
+                        c.getId(), c.getContent(), c.getUser().getNickname(),c.getUser().getId(),
                         c.getCreatedDt(), encodeFileToBase64(c.getUser().getProfileImgFilename(), false),
                         isLike(user, c), c.getCommentLikes().size()); //isLike 추가 (댓글에 대한 좋아요를 했는지 확인)
             } else {
                 // 비회원인 경우
                 commentDto = new CommentDto(
-                        c.getId(), c.getContent(), c.getUser().getNickname(),
+                        c.getId(), c.getContent(), c.getUser().getNickname(), c.getUser().getId(),
                         c.getCreatedDt(), encodeFileToBase64(c.getUser().getProfileImgFilename(), false),
                         c.getCommentLikes().size());
             }
@@ -164,7 +164,7 @@ public class DetailCommon {
             List<ReplyDto> replies = new ArrayList<>();
             for (Reply r : c.getReplies()) {
                 replies.add(new ReplyDto(
-                        r.getId(), r.getContent(), r.getUser().getNickname(),
+                        r.getId(), r.getContent(), r.getUser().getNickname(), r.getUser().getId(),
                         r.getCreatedDt(), encodeFileToBase64(r.getUser().getProfileImgFilename(), false)));
             }
             commentDto.setReplies(replies);
