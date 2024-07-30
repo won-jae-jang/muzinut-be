@@ -49,6 +49,13 @@ public class ProfileController {
         ProfileSongDto albumTab = profileService.getAlbumTab(userId);
         return new ResponseEntity<ProfileSongDto>(albumTab, HttpStatus.OK);
     }
+    // 프로필 페이지 - 앨범 탭(기본), 마이페이지 버튼 클릭했을 때
+    @GetMapping("/me")
+    public ResponseEntity<?> getMyProfileAlbum(@RequestParam("nickname") String nickname) throws JsonProcessingException {
+        ProfileSongDto albumTab = profileService.getAlbumTabByNickname(nickname);
+        return new ResponseEntity<>(albumTab, HttpStatus.OK);
+    }
+
 
     // 프로필 페이지 - 라운지 탭
     @GetMapping(value = "lounge")

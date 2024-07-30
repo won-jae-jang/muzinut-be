@@ -62,13 +62,26 @@ public class ProfileService extends DetailCommon {
     private final LoungeQueryRepository queryRepository;
     private final PlayNutRepository playNutRepository;
 
-    // 프로필 페이지 보여주는 메소드
+    // 기존 userId를 통해 프로필 정보를 가져오는 메소드
     public ProfileDto getUserProfile(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundMemberException("존재하지 않는 회원입니다."));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundMemberException("존재하지 않는 회원입니다."));
+        return buildProfileDto(user);
+    }
+
+    // 닉네임을 통해 프로필 정보를 가져오는 메소드
+    public ProfileDto getUserProfileByNickname(String nickname) {
+        User user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new NotFoundMemberException("존재하지 않는 회원입니다."));
+        return buildProfileDto(user);
+    }
+
+    // 프로필 페이지 값 설정
+    public ProfileDto buildProfileDto(User user) {
         validateUser(user);
         // 팔로잉 수, 팔로워 수 가져오기
         Long followingCount = followRepository.countFollowingByUser(user);
-        Long followersCount = followRepository.countFollowerByFollowingMemberId(userId);
+        Long followersCount = followRepository.countFollowerByUser(user);
 
         // 현재 로그인한 사용자 확인
         String currentUsername = getCurrentUsername();
@@ -83,7 +96,7 @@ public class ProfileService extends DetailCommon {
         // 팔로잉 여부
         boolean isFollowing = false;
         if (currentUser != null) {
-            isFollowing = followRepository.existsByUserAndFollowingMemberId(user, userId);
+            isFollowing = followRepository.existsByUserAndFollowingMemberId(currentUser, user.getId());
             log.info("isFollowing = {}", isFollowing);
         }
 
@@ -118,8 +131,19 @@ public class ProfileService extends DetailCommon {
                 .orElseThrow(() -> new NotFoundMemberException("접근 권한이 없습니다."));
     }
 
-    // 앨범 탭을 보여주는 메소드
+    // 앨범 탭(기본), userId를 통해 프로필 이미지 클릭했을 때
     public ProfileSongDto getAlbumTab(Long userId) {
+        return buildAlbumTab(userRepository.findById(userId).orElseThrow(() -> new NotFoundMemberException("존재하지 않는 회원입니다.")));
+    }
+
+    // 앨범 탭(기본), nickname을 통해 마이페이지 버튼 클릭했을 때
+    public ProfileSongDto getAlbumTabByNickname(String nickname) {
+        return buildAlbumTab(userRepository.findByNickname(nickname).orElseThrow(() -> new NotFoundMemberException("존재하지 않는 회원입니다.")));
+    }
+
+    // 앨범 탭(기본) 값 설정하는 메소드
+    public ProfileSongDto buildAlbumTab(User user) {
+        Long userId = user.getId();
         List<Song> songs = songRepository.findSongsByUserIdOrderByLikesAndId(userId);
         ProfileDto profileDto = getUserProfile(userId);
 
