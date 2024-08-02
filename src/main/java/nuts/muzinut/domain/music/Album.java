@@ -23,6 +23,7 @@ public class Album {
     private User user;
 
     private String name;
+    @Column(length = 10000)
     private String intro;
 
     @Column(name = "album_img")

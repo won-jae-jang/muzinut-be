@@ -79,7 +79,8 @@ public class FollowController {
             log.error("User not found with ID: {}", userId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        Long count = followService.countFollowers(user);
+        Long count = followService.countFollowers(userId);
+//        Long count = followService.countFollowers(user);
         Map<String, Long> response = new HashMap<>();
         response.put("followersCount", count);
         return ResponseEntity.ok(response);
