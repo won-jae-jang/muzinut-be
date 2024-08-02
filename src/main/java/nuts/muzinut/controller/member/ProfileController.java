@@ -43,73 +43,7 @@ public class ProfileController {
     private final FileStore fileStore;
     private final ObjectMapper objectMapper;
 
-    // 다른 경로 ver
-//    // 프로필 페이지 - 앨범 탭(기본), 프로필 이미지 클릭했을 때
-//    @GetMapping("/{userId}")
-//    public ResponseEntity<?> getUserProfileAlbum(@PathVariable Long userId) throws JsonProcessingException {
-//        ProfileSongDto albumTab = profileService.getAlbumTab(userId);
-//        return new ResponseEntity<ProfileSongDto>(albumTab, HttpStatus.OK);
-//    }
-//    // 프로필 페이지 - 앨범 탭(기본), 마이페이지 버튼 클릭했을 때
-//    @GetMapping("/me")
-//    public ResponseEntity<?> getMyProfileAlbum(@RequestParam("nickname") String nickname) throws JsonProcessingException {
-//        ProfileSongDto albumTab = profileService.getAlbumTabByNickname(nickname);
-//        return new ResponseEntity<>(albumTab, HttpStatus.OK);
-//    }
-//
-//
-//    // 프로필 페이지 - 라운지 탭
-//    @GetMapping(value = "lounge/{userId}")
-//    public ResponseEntity<?> getUserProfileLounge(@PathVariable Long userId) throws IOException {
-//        ProfileLoungeDto profileLoungeDto = profileService.getLoungeTab(userId, 0);
-//        return ResponseEntity.ok(profileLoungeDto);
-//    }
-//
-//    // 프로필 페이지 - 게시글 탭
-//    @GetMapping("/board/{userId}")
-//    public ResponseEntity<?> getUserProfileBoard(@PathVariable Long userId) throws JsonProcessingException {
-//        String currentUsername = profileService.getCurrentUsername();
-//        User currentUser = profileService.findUserByUsername(currentUsername);
-//
-//        if (!currentUser.getId().equals(userId)) {
-//            throw new NotFoundMemberException("본인의 프로필만 접근 가능");
-//        } else {
-//            ProfileBoardDto profileBoardDto = profileService.getBoardTab(userId);
-//            return new ResponseEntity<>(profileBoardDto, HttpStatus.OK);
-//        }
-//    }
-//
-//    // 프로필 페이지 - 플리넛 탭
-//    @GetMapping("/playnut/{userId}")
-//    public ResponseEntity<?> getUserProfilePlayNuts(@PathVariable Long userId) throws JsonProcessingException {
-//        String currentUsername = profileService.getCurrentUsername();
-//        User currentUser = profileService.findUserByUsername(currentUsername);
-//
-//        if (!currentUser.getId().equals(userId)) {
-//            throw new NotFoundMemberException("본인의 프로필만 접근 가능");
-//        } else {
-//            ProfilePlayNutDto profilePlayNutDto = profileService.getPlayNutTab(userId);
-//            return new ResponseEntity<>(profilePlayNutDto, HttpStatus.OK);
-//        }
-//    }
-
-
-    // 기존 경로 ver
-    // 프로필 페이지 - 앨범 탭(기본), 프로필 이미지 클릭했을 때
-//    @GetMapping
-//    public ResponseEntity<?> getUserProfileAlbum(@RequestParam(value = "userId", required = false) Long userId) throws JsonProcessingException {
-//        if (userId == null) {
-//            String username = profileService.getCurrentUsername();
-//            if (username.equals("anonymousUser")) {
-//                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-//            }
-//            userId = userService.findUserByUsername(username).getId();
-//        }
-//        ProfileSongDto albumTab = profileService.getAlbumTab(userId);
-//        return new ResponseEntity<ProfileSongDto>(albumTab, HttpStatus.OK);
-//    }
-
-    // 프로필 페이지 - 앨범 탭(기본), 마이페이지 버튼 클릭했을 때
+    // 프로필 페이지 - 앨범 탭(기본)
     @GetMapping()
     public ResponseEntity<?> getMyProfileAlbum(@RequestParam(value = "nickname", required = false) String nickname) throws JsonProcessingException {
         if (nickname == null) {
@@ -125,35 +59,35 @@ public class ProfileController {
 
     // 프로필 페이지 - 라운지 탭
     @GetMapping(value = "lounge")
-    public ResponseEntity<?> getUserProfileLounge(@RequestParam("userId") Long userId) throws IOException {
-        ProfileLoungeDto profileLoungeDto = profileService.getLoungeTab(userId, 0);
+    public ResponseEntity<?> getUserProfileLounge(@RequestParam("nickname") String nickname) throws IOException {
+        ProfileLoungeDto profileLoungeDto = profileService.getLoungeTab(nickname, 0);
         return ResponseEntity.ok(profileLoungeDto);
     }
 
     // 프로필 페이지 - 게시글 탭
     @GetMapping("/board")
-    public ResponseEntity<?> getUserProfileBoard(@RequestParam("userId") Long userId) throws JsonProcessingException {
+    public ResponseEntity<?> getUserProfileBoard(@RequestParam("nickname") String nickname) throws JsonProcessingException {
         String currentUsername = profileService.getCurrentUsername();
         User currentUser = profileService.findUserByUsername(currentUsername);
 
-        if (!currentUser.getId().equals(userId)) {
+        if (!currentUser.getNickname().equals(nickname)) {
             throw new NotFoundMemberException("본인의 프로필만 접근 가능");
         } else {
-            ProfileBoardDto profileBoardDto = profileService.getBoardTab(userId);
+            ProfileBoardDto profileBoardDto = profileService.getBoardTab(nickname);
             return new ResponseEntity<>(profileBoardDto, HttpStatus.OK);
         }
     }
 
     // 프로필 페이지 - 플리넛 탭
     @GetMapping("/playnut")
-    public ResponseEntity<?> getUserProfilePlayNuts(@RequestParam("userId") Long userId) throws JsonProcessingException {
+    public ResponseEntity<?> getUserProfilePlayNuts(@RequestParam("nickname") String nickname) throws JsonProcessingException {
         String currentUsername = profileService.getCurrentUsername();
         User currentUser = profileService.findUserByUsername(currentUsername);
 
-        if (!currentUser.getId().equals(userId)) {
+        if (!currentUser.getNickname().equals(nickname)) {
             throw new NotFoundMemberException("본인의 프로필만 접근 가능");
         } else {
-            ProfilePlayNutDto profilePlayNutDto = profileService.getPlayNutTab(userId);
+            ProfilePlayNutDto profilePlayNutDto = profileService.getPlayNutTab(nickname);
             return new ResponseEntity<>(profilePlayNutDto, HttpStatus.OK);
         }
     }
@@ -179,10 +113,10 @@ public class ProfileController {
         lounge.setFilename(filenames.get(STORE_FILENAME)); //라운지 파일명 설정
         loungeService.save(lounge); //라운지 게시판 저장
         HttpHeaders header = new HttpHeaders();
-        header.setLocation(URI.create("/profile/lounge?userId=" + user.getId())); // 라운지 탭으로 리다이렉트
+//        header.setLocation(URI.create("/profile/lounge?userId=" + user.getId())); // 라운지 탭으로 리다이렉트
 
         return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
-                .headers(header)
+//                .headers(header)
                 .body(new MessageDto("라운지 게시판이 생성되었습니다"));
     }
 
