@@ -40,6 +40,9 @@ public class QRecruitBoard extends EntityPathBase<RecruitBoard> {
     public final DateTimePath<java.time.LocalDateTime> endWorkDuration = createDateTime("endWorkDuration", java.time.LocalDateTime.class);
 
     //inherited
+    public final StringPath filename;
+
+    //inherited
     public final NumberPath<Long> id;
 
     //inherited
@@ -90,6 +93,7 @@ public class QRecruitBoard extends EntityPathBase<RecruitBoard> {
         this.bookmarks = _super.bookmarks;
         this.comments = _super.comments;
         this.createdDt = _super.createdDt;
+        this.filename = _super.filename;
         this.id = _super.id;
         this.likeCount = _super.likeCount;
         this.likes = _super.likes;

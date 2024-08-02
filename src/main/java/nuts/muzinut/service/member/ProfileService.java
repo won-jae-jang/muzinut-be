@@ -81,7 +81,8 @@ public class ProfileService extends DetailCommon {
         validateUser(user);
         // 팔로잉 수, 팔로워 수 가져오기
         Long followingCount = followRepository.countFollowingByUser(user);
-        Long followersCount = followRepository.countFollowerByUser(user);
+        Long followersCount = followRepository.countFollowerByFollowingMemberId(user.getId());
+//        Long followersCount = followRepository.countFollowerByUser(user);
 
         // 현재 로그인한 사용자 확인
         String currentUsername = getCurrentUsername();

@@ -42,6 +42,9 @@ public class StreamingController {
                     }
                 };
 
+                // 음원 플레이 횟수 추가
+                streamingService.playViewPlus(songId);
+
                 HttpHeaders headers = new HttpHeaders();
                 headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
                 headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=\"" + resource.getFilename() + "\"");

@@ -18,7 +18,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     Long countFollowingByUser(User user);
 
     // 특정 유저의 팔로워 수를 계산하는 메서드
-    Long countFollowerByUser(User user);
+    Long countFollowerByFollowingMemberId(Long followingMemberId);
+//    Long countFollowerByUser(User user);
 
     /**
      * @param notification: 알림 여부, false:끄기, true:켜기

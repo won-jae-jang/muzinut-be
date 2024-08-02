@@ -142,7 +142,7 @@ public class MainPageService {
             File file = new File(fileDir + top5Artist.getProfileImg());
             // 파일이 없는 경우 예외 처리
             if (!file.exists() || !file.isFile()) {
-                throw new NoDataFoundException("파일이 존재 하지 않습니다");
+                file = new File(fileDir + "/base/profile.png");
             }
             String encodedFile = encodeFiile.encodeFileToBase64(file);
             top5Artist.setProfileImg(encodedFile);

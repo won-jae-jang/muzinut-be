@@ -23,7 +23,9 @@ public class Song extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(length = 10000)
     private String title;
+    @Column(length = 10000)
     private String lyrics;
     private String lyricist; // 작사가
     private String composer; // 작곡가
