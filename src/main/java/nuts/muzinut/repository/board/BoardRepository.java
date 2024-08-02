@@ -20,6 +20,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     List<Board> findByUserId(Long userId);
 
+    @Query("SELECT b FROM Board b WHERE b.user.nickname = :nickname")
+    List<Board> findByNickname(String nickname);
+
     @Query("SELECT b FROM Board b JOIN b.bookmarks bm WHERE bm.user.id = :userId")
     List<Board> findBookmarkedBoardsByUserId(@Param("userId") Long userId);
 }

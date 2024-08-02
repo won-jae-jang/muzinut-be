@@ -1,7 +1,6 @@
 package nuts.muzinut.service.member;
 
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.dsl.Expressions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nuts.muzinut.domain.board.Board;
@@ -24,7 +23,6 @@ import nuts.muzinut.dto.member.profile.PlayNut.ProfilePlayNutSongDto;
 import nuts.muzinut.dto.member.profile.PlayNut.ProfilePlayNutSongsForm;
 import nuts.muzinut.dto.member.profile.ProfileDto;
 import nuts.muzinut.exception.board.BoardNotExistException;
-import nuts.muzinut.exception.board.BoardNotFoundException;
 import nuts.muzinut.exception.NotFoundEntityException;
 import nuts.muzinut.exception.NotFoundMemberException;
 import nuts.muzinut.repository.board.BoardRepository;
@@ -33,7 +31,6 @@ import nuts.muzinut.repository.board.query.LoungeQueryRepository;
 import nuts.muzinut.repository.member.FollowRepository;
 import nuts.muzinut.repository.member.UserRepository;
 import nuts.muzinut.repository.music.AlbumRepository;
-import nuts.muzinut.repository.music.PlayNutMusicRepository;
 import nuts.muzinut.repository.music.PlayNutRepository;
 import nuts.muzinut.repository.music.SongRepository;
 import nuts.muzinut.service.board.DetailCommon;
@@ -196,15 +193,15 @@ public class ProfileService extends DetailCommon {
     }
 
     // 라운지 탭을 보여주는 메소드
-    public ProfileLoungeDto getLoungeTab(Long userId, int startPage) throws BoardNotExistException {
-        User user = userRepository.findById(userId)
+    public ProfileLoungeDto getLoungeTab(String nickname, int startPage) throws BoardNotExistException {
+        User user = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new NotFoundMemberException("존재하지 않는 회원입니다."));
 
         PageRequest pageRequest = PageRequest.of(startPage, 10, Sort.by(Sort.Direction.DESC, "createdDt"));
-        Page<Lounge> page = loungeRepository.findAllByUserId(userId, pageRequest);
+        Page<Lounge> page = loungeRepository.findAllByNickname(nickname, pageRequest);
         List<Lounge> lounges = page.getContent();
 
-        ProfileDto profileDto = getUserProfile(userId);
+        ProfileDto profileDto = getUserProfileByNickname(nickname);
 
         if (lounges.isEmpty()){
             return new ProfileLoungeDto(
@@ -218,6 +215,7 @@ public class ProfileService extends DetailCommon {
                     profileDto.isFollowStatus()
             );
         }
+        Long userId = user.getId();
         List<ProfileLoungesForm> loungesForms = lounges.stream()
                 .map(lounge -> {
                     // 각 라운지에 대한 세부 정보 가져오기
@@ -255,9 +253,12 @@ public class ProfileService extends DetailCommon {
     }
 
     // 게시글 탭을 보여주는 메소드
-    public ProfileBoardDto getBoardTab(Long userId) {
+    public ProfileBoardDto getBoardTab(String nickname) {
+        User user = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new NotFoundMemberException("존재하지 않는 회원입니다."));
+
         // 유저가 작성한 게시글 조회
-        List<Board> boards = boardRepository.findByUserId(userId);
+        List<Board> boards = boardRepository.findByNickname(nickname);
 
         // 게시글의 타입을 조회하여 BoardsTitle로 변환
         List<BoardsTitle> boardsTitles = boards.stream()
@@ -265,6 +266,7 @@ public class ProfileService extends DetailCommon {
                 .collect(Collectors.toList());
 
         // 북마크된 게시글 조회
+        Long userId = user.getId();
         List<Board> bookmarkedBoards = boardRepository.findBookmarkedBoardsByUserId(userId);
 
         // 북마크의 타입을 조회하여 BookmarkTitle로 변환
@@ -312,9 +314,10 @@ public class ProfileService extends DetailCommon {
     }
 
     // 플리넛 탭을 보여주는 메서드
-    public ProfilePlayNutDto getPlayNutTab(Long userId) {
-        User user = userRepository.findById(userId)
+    public ProfilePlayNutDto getPlayNutTab(String nickname) {
+        User user = userRepository.findByNickname(nickname)
                 .orElseThrow(() -> new NotFoundMemberException("존재하지 않는 회원입니다."));
+        Long userId = user.getId();
         List<PlayNut> playNuts = playNutRepository.findByUserId(userId);
         ProfileDto profileDto = getUserProfile(userId);
 

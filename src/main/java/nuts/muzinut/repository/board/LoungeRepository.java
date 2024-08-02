@@ -22,4 +22,8 @@ public interface LoungeRepository extends JpaRepository<Lounge, Long> {
 
     @Query(value = "select l from Lounge l where l.user.id = :userId")
     Page<Lounge> findAllByUserId(@Param("userId") Long userId, Pageable pageable);
+
+    @Query(value = "select l from Lounge l where l.user.nickname = :nickname")
+    Page<Lounge> findAllByNickname(@Param("nickname") String nickname, Pageable pageable);
 }
+
