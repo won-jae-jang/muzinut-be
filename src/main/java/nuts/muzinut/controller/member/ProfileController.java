@@ -96,21 +96,21 @@ public class ProfileController {
 
     // 기존 경로 ver
     // 프로필 페이지 - 앨범 탭(기본), 프로필 이미지 클릭했을 때
-    @GetMapping
-    public ResponseEntity<?> getUserProfileAlbum(@RequestParam(value = "userId", required = false) Long userId) throws JsonProcessingException {
-        if (userId == null) {
-            String username = profileService.getCurrentUsername();
-            if (username.equals("anonymousUser")) {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
-            userId = userService.findUserByUsername(username).getId();
-        }
-        ProfileSongDto albumTab = profileService.getAlbumTab(userId);
-        return new ResponseEntity<ProfileSongDto>(albumTab, HttpStatus.OK);
-    }
+//    @GetMapping
+//    public ResponseEntity<?> getUserProfileAlbum(@RequestParam(value = "userId", required = false) Long userId) throws JsonProcessingException {
+//        if (userId == null) {
+//            String username = profileService.getCurrentUsername();
+//            if (username.equals("anonymousUser")) {
+//                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+//            }
+//            userId = userService.findUserByUsername(username).getId();
+//        }
+//        ProfileSongDto albumTab = profileService.getAlbumTab(userId);
+//        return new ResponseEntity<ProfileSongDto>(albumTab, HttpStatus.OK);
+//    }
 
     // 프로필 페이지 - 앨범 탭(기본), 마이페이지 버튼 클릭했을 때
-    @GetMapping("/me")
+    @GetMapping()
     public ResponseEntity<?> getMyProfileAlbum(@RequestParam(value = "nickname", required = false) String nickname) throws JsonProcessingException {
         if (nickname == null) {
             String username = profileService.getCurrentUsername();

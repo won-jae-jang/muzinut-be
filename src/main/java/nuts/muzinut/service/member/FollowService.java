@@ -37,7 +37,8 @@ public class FollowService {
         User followingUser = userService.findUserById(followingUserId);
         validateUser(followingUser);
 
-        if (!(isFollowing(user, followingUser))) {
+        if (!(isFollowing(user, followingUser.getId()))) {
+//        if (!(isFollowing(user, followingUser))) {
             // 언팔로잉 상태면(기본) 팔로잉
             Follow follow = new Follow();
             follow.createFollowing(user, followingUser);
@@ -56,9 +57,11 @@ public class FollowService {
     }
 
     // 특정 유저의 `팔로워` 수를 반환하는 메소드
-    public Long countFollowers(User user) {
-        validateUser(user);
-        return followRepository.countFollowerByUser(user);
+    public Long countFollowers(Long userId) {
+        validateUserId(userId);
+        return followRepository.countFollowerByFollowingMemberId(userId);
+//        validateUser(user);
+//        return followRepository.countFollowerByUser(user);
     }
 
     // 팔로우 알림 토글 메서드
@@ -81,11 +84,14 @@ public class FollowService {
     }
 
     // 특정 유저가 특정 회원을 팔로우하고 있는지 확인하는 메소드
-    public boolean isFollowing(User user, User followingMember) {
+    public boolean isFollowing(User user, Long userId) {
+//    public boolean isFollowing(User user, User followingMember) {
         validateUser(user);
-        validateUser(followingMember);
-        Long followingMemberid = followingMember.getId();
-        return followRepository.existsByUserAndFollowingMemberId(user, followingMemberid);
+        validateUserId(userId);
+        return followRepository.existsByUserAndFollowingMemberId(user, userId);
+//        validateUser(followingMember);
+//        Long followingMemberid = followingMember.getId();
+//        return followRepository.existsByUserAndFollowingMemberId(user, followingMemberid);
     }
 
     // 팔로잉(특정 유저가 팔로우한 회원의) 리스트를 반환하는 메소드
