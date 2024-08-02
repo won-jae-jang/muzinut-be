@@ -63,16 +63,16 @@ public class FreeBoardController {
         freeBoardService.save(freeBoard); //자유 게시판 저장
 
         HttpHeaders header = new HttpHeaders();
-        header.setLocation(URI.create("/community/free-boards/" + freeBoard.getId())); //수정한 게시판으로 리다이렉트
+        // header.setLocation(URI.create("/community/free-boards/" + freeBoard.getId())); //수정한 게시판으로 리다이렉트
 
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
+        return ResponseEntity.status(HttpStatus.OK)
                 .headers(header)
                 .body(new MessageDto("자유 게시판이 생성되었습니다"));
     }
 
     //특정 게시판 조회
     @GetMapping(value = "/{id}", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<MultiValueMap<String, Object>> getDetailFreeBoard(@PathVariable Long id) throws JsonProcessingException {
+    public ResponseEntity<MultiValueMap<String, Object>> getDetailFreeBoard(@PathVariable(name = "id") Long id) throws JsonProcessingException {
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<String, Object>();
         User findUser;
 

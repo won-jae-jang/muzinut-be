@@ -1,8 +1,11 @@
 package nuts.muzinut.service.music;
 
 import lombok.RequiredArgsConstructor;
+import nuts.muzinut.domain.music.PlayView;
+import nuts.muzinut.domain.music.Song;
 import nuts.muzinut.exception.NotFoundEntityException;
 import nuts.muzinut.exception.NotFoundFileException;
+import nuts.muzinut.repository.music.PlayViewRepository;
 import nuts.muzinut.repository.music.SongRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -17,6 +20,7 @@ import java.nio.file.Paths;
 @RequiredArgsConstructor
 public class StreamingService {
     private final SongRepository songRepository;
+    private final PlayViewRepository playViewRepository;
     @Value("${spring.file.dir}")
     private String fileDir;
     public Resource streamingSong(Long songId) {
@@ -35,5 +39,11 @@ public class StreamingService {
             throw new RuntimeException(e);
         }
         return resource;
+    }
+
+    public void playViewPlus(Long songId) {
+        Song song = songRepository.findById(songId).get();
+        PlayView playView = new PlayView(song);
+        playViewRepository.save(playView);
     }
 }

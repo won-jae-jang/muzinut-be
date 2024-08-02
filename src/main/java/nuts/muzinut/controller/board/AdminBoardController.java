@@ -78,9 +78,9 @@ public class AdminBoardController {
         adminBoardService.createAdminBoard(adminBoard, user);
 
         HttpHeaders header = new HttpHeaders();
-        header.setLocation(URI.create("/community/admin-boards/" + adminBoard.getId())); //생성한 게시판으로 리다이렉트
+        // header.setLocation(URI.create("/community/admin-boards/" + adminBoard.getId())); //생성한 게시판으로 리다이렉트
 
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
+        return ResponseEntity.status(HttpStatus.OK)
                 .headers(header)
                 .body(new MessageDto("어드민 게시판이 생성되었습니다"));
     }

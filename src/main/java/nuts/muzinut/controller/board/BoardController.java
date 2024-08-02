@@ -48,7 +48,8 @@ public class BoardController {
     //특정 퀼파일 가져오기
     @GetMapping("/get-file")
     public ResponseEntity<Resource> getQuillFile(
-            @RequestParam String filename) throws MalformedURLException {
+            @RequestParam
+            String filename) throws MalformedURLException {
 
         try {
             String storeFilename = boardService.getQuillFilename(filename);

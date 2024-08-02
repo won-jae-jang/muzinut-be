@@ -44,8 +44,15 @@ public class ArtistService {
 
         // 이미지 Base64 형식으로 인코딩하여 dto에 다시 저장
         for(HotArtistDto dto : page.getContent()) {
-            String img = dto.getImg();
-            String imgPath = fileDir + img;
+            String imgPath;
+            if(dto.getImg() == null) {
+                // 프로필 이미지를 지정하지 않은 경우
+                imgPath = fileDir + "/base/profile.png";
+            }else {
+                // 프로필 이미지를 지정한 경우
+                String img = dto.getImg();
+                imgPath = fileDir + img;
+            }
             File file = new File(imgPath);
             String encodingImg = encodingService.encodingBase64(file);
             dto.setImg(encodingImg);
